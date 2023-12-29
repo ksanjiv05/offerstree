@@ -1,22 +1,26 @@
 import React from 'react';
-import {View} from 'react-native';
-import FormInput from '../components/atoms/input';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import routes from './routes';
 
+const Stack = createNativeStackNavigator();
 type Props = {};
 
 const Routes = ({}: Props) => {
   return (
-    <View style={{
-        backgroundColor: 'red',
-        padding: 20,
-    }}>
-      <FormInput
-        value={'xxx'}
-        onChange={function (value: string): void {
-          throw new Error('Function not implemented.');
-        }}
-      />
-    </View>
+    <Stack.Navigator initialRouteName="register">
+      {routes.map((route, index) => {
+        return (
+          <Stack.Screen
+            key={index}
+            name={route.name}
+            component={route.component}
+            options={{
+              headerShown: false,
+            }}
+          />
+        );
+      })}
+    </Stack.Navigator>
   );
 };
 

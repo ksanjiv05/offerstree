@@ -14,17 +14,12 @@ import ClockOutIcon from './ClockOut.svg';
 import ReloadIcon from './Reload.svg';
 import DownloadIcon from './Download.svg';
 import SettingsIcon from './Settings.svg';
-import WorkersIcon from './Workers.svg';
 import NavigationArrowIcon from './NavigationArrow.svg';
 import CalendarIcon from './Calendar.svg';
 import ArrowRightIcon from './ArrowRight.svg';
 import RadioMarkIcon from './RadioMark.svg';
 import ActiveRadioMarkIcon from './ActiveRadioMark.svg';
-import WorkOrderCompleteIcon from './WorkOrderComplete.svg';
-import WorkOrderPausedIcon from './WorkOrderPaused.svg';
-import WorkOrderPendingIcon from './WorkOrderPending.svg';
-import WorkOrderTravelingIcon from './WorkOrderTraveling.svg';
-import WorkOrderWorkingIcon from './WorkOrderWorking.svg';
+
 import SupportIcon from './Support.svg';
 import CallUsIcon from './CallUs.svg';
 import ChatWithUsIcon from './ChatWithUs.svg';
@@ -33,8 +28,7 @@ import OpenIcon from './Open.svg';
 import ArrowBottomIcon from './ArrowBottom.svg';
 import ArrowTopIcon from './ArrowTop.svg';
 import DetailsClockIcon from './DetailsClock.svg';
-import WODetailsContactIcon from './WoDetailsContact.svg';
-import WODetailsNoteIcon from './WoDetailsNote.svg';
+
 import SelectButtonIcon from './SelectButton.svg';
 import CrossIcon from './Cross.svg';
 import IdleIcon from './Idle.svg';
@@ -51,6 +45,10 @@ import SmallCrossIcon from './SmallCross.svg';
 import EmptyCheckBox from './emptyCheckbox .svg';
 import FilledCheckBox from './filledCheckbox.svg';
 import TopArrowIcon from './topArrow.svg';
+import GoogleIcon from './Google.svg';
+import FacebookIcon from './Facebook.svg';
+import XIcon from './XLogo.svg';
+import StarIcon from './Star.svg';
 export {
   TopArrowIcon,
   EmptyCheckBox,
@@ -72,17 +70,11 @@ export {
   ReloadIcon,
   DownloadIcon,
   SettingsIcon,
-  WorkersIcon,
   NavigationArrowIcon,
   CalendarIcon,
   ArrowRightIcon,
   RadioMarkIcon,
   ActiveRadioMarkIcon,
-  WorkOrderCompleteIcon,
-  WorkOrderPausedIcon,
-  WorkOrderPendingIcon,
-  WorkOrderTravelingIcon,
-  WorkOrderWorkingIcon,
   SupportIcon,
   CallUsIcon,
   ChatWithUsIcon,
@@ -91,8 +83,6 @@ export {
   ArrowBottomIcon,
   ArrowTopIcon,
   DetailsClockIcon,
-  WODetailsContactIcon,
-  WODetailsNoteIcon,
   CrossIcon,
   IdleIcon,
   SyncedCloud,
@@ -105,4 +95,8 @@ export {
   AddIcon,
   SearchIcon,
   SmallCrossIcon,
+  GoogleIcon,
+  FacebookIcon,
+  XIcon,
+  StarIcon,
 };

@@ -7,7 +7,7 @@ import Routes from './app/routes';
 function App(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'light-content'} />
+      <StatusBar barStyle={'light-content'} backgroundColor={"#000000"} />
       <ThemeProvider>
         <NavigationContainer>
           <Routes />

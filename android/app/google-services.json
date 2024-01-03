@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "842286505365",
+    "project_id": "cityoffer-c24b1",
+    "storage_bucket": "cityoffer-c24b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842286505365:android:9a32b730462db5198eaa9c",
+        "android_client_info": {
+          "package_name": "com.newcityoffer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2rHziKmmHkhrBSSBvvEbb3bTsH1HtPJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

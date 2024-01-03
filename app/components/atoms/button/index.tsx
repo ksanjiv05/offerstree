@@ -1,4 +1,4 @@
-import {Text, TouchableOpacity} from 'react-native';
+import {StyleProp, Text, TextStyle, TouchableOpacity, ViewStyle} from 'react-native';
 import React from 'react';
 import styleSheet from './styles';
 import {useTheme} from '../../../theme/ThemeContext';
@@ -6,8 +6,8 @@ import {useTheme} from '../../../theme/ThemeContext';
 interface ITextButtonProps {
   onPress(): void;
   labelButton: string;
-  buttonStyle?: object;
-  labelButtonStyle?: object;
+  buttonStyle?: StyleProp<ViewStyle>;
+  labelButtonStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
 }
 

@@ -1,8 +1,11 @@
 import {
   NativeSyntheticEvent,
+  StyleProp,
   TextInput,
   TextInputKeyPressEventData,
+  TextStyle,
   View,
+  ViewStyle,
 } from 'react-native';
 import React, {forwardRef, ReactNode} from 'react';
 import styleSheet from './styles';
@@ -28,8 +31,10 @@ interface IFormInputProps {
   onBlur?(): void;
   appendComponent?: ReactNode | null;
   isErrorMessage?: boolean;
-  inputContainerStyle?: object;
-  inputStyle?: object;
+  inputContainerStyle?: StyleProp<ViewStyle>;
+  inputStyle?: StyleProp<TextStyle>;
+  numberOfLines?: number;
+  multiline?: boolean;
   onKeyPress?(e: NativeSyntheticEvent<TextInputKeyPressEventData>): void;
 }
 
@@ -59,6 +64,8 @@ const FormInput = forwardRef<TextInput, IFormInputProps>((props, ref) => {
             keyboardType={props.keyboardType}
             onFocus={props.onFocus}
             onBlur={props.onBlur}
+            multiline={props.multiline}
+            numberOfLines={props.numberOfLines}
             ref={ref}
             onKeyPress={props.onKeyPress}
             // onKeyPress={props.onKeyPress}

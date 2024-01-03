@@ -49,6 +49,11 @@ import GoogleIcon from './Google.svg';
 import FacebookIcon from './Facebook.svg';
 import XIcon from './XLogo.svg';
 import StarIcon from './Star.svg';
+
+import AiEditIcon from './AiEdit.svg';
+import LocationIcon from './Location.svg';
+import CheckIcon from './Check.svg';
+
 export {
   TopArrowIcon,
   EmptyCheckBox,
@@ -99,4 +104,7 @@ export {
   FacebookIcon,
   XIcon,
   StarIcon,
+  AiEditIcon,
+  LocationIcon,
+  CheckIcon,
 };

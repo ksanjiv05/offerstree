@@ -1,4 +1,4 @@
-import {View, ScrollView} from 'react-native';
+import {View, ScrollView, StyleSheet} from 'react-native';
 import React from 'react';
 import {useTheme} from '../../../theme/ThemeContext';
 import styleSheet from './styles';
@@ -62,8 +62,9 @@ const StepA = () => {
 const StepB = () => {
   return (
     <View>
-      <View style={{height: 200}}>
+      <View style={{height: 200,backgroundColor:"red"}}>
         <MapView
+          style={ {...StyleSheet.absoluteFillObject,}}
           initialRegion={{
             latitude: 37.78825,
             longitude: -122.4324,

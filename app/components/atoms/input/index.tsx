@@ -1,9 +1,11 @@
 import {
+  GestureResponderEvent,
   NativeSyntheticEvent,
   StyleProp,
   TextInput,
   TextInputKeyPressEventData,
   TextStyle,
+  TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native';
@@ -81,3 +83,51 @@ const FormInput = forwardRef<TextInput, IFormInputProps>((props, ref) => {
 });
 
 export default FormInput;
+
+interface IButtonInputProps {
+  placeholder?: string;
+  value: string;
+  onChange(value: string): void;
+
+  appendComponent?: ReactNode | null;
+  isErrorMessage?: boolean;
+  inputContainerStyle?: StyleProp<ViewStyle>;
+  inputStyle?: StyleProp<TextStyle>;
+  onKeyPress?(e: NativeSyntheticEvent<TextInputKeyPressEventData>): void;
+  onPress?: ((event: GestureResponderEvent) => void) | undefined;
+}
+
+export const ButtonInput = forwardRef<TextInput, IButtonInputProps>(
+  (props, ref) => {
+    const theme = useTheme();
+    const styles = styleSheet(theme);
+
+    return (
+      <TouchableOpacity
+        onPress={props?.onPress}
+        activeOpacity={1}
+        style={[
+          styles.defaultInputContainerStyle,
+          props.isErrorMessage ? styles.redBorder : styles.greyBorder,
+          props.inputContainerStyle,
+        ]}>
+        <View style={styles.flexRow}>
+          <View style={styles.leftSideContainerStyle}>
+            <TextInput
+              style={[styles.defaultInputStyle, props.inputStyle]}
+              placeholder={props.placeholder}
+              value={props.value}
+              onChangeText={props.onChange}
+              editable={false}
+              // onKeyPress={props.onKeyPress}
+            />
+          </View>
+
+          <View style={styles.rightSideContainerStyle}>
+            {props.appendComponent && props.appendComponent}
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  },
+);

@@ -16,7 +16,7 @@ import FormInput from '../../components/atoms/input';
 import TextButton from '../../components/atoms/button';
 import Space from '../../components/atoms/space';
 import AnimatedTitle from '../../components/molecules/animated/title';
-import {FaceIDIcon, FacebookIcon, GoogleIcon, XIcon} from '../../assets/icons';
+import { FacebookIcon, GoogleIcon, XIcon} from '../../assets/icons';
 
 type Props = {};
 

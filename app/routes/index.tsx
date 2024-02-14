@@ -7,7 +7,7 @@ type Props = {};
 
 const Routes = ({}: Props) => {
   return (
-    <Stack.Navigator initialRouteName="store-enroll">
+    <Stack.Navigator initialRouteName="offer-view">
       {routes.map((route, index) => {
         return (
           <Stack.Screen

@@ -54,7 +54,7 @@ const categories = [
   'lighting',
 ];
 
-const SelectInput = forwardRef<TextInput, ISelectInputProps>((props, ref) => {
+const SelectInput = forwardRef<TextInput, ISelectInputProps>((props) => {
   const theme = useTheme();
   const styles = styleSheet(theme);
 

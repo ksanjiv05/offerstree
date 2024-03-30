@@ -24,7 +24,21 @@ export default ({colors}: ITheme) => {
     registerText: {
       color: colors.green,
       fontWeight: 'bold',
-    }
+    },
+    switchContainer: {
+      width: 150,
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+    },
+    eyeContainer: {
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      width: 60,
+      height: 56,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     // flexWithHeight: (height: number) => ({
     //   flex: 1,
     //   maxHeight:height,

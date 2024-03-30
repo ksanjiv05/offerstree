@@ -1,10 +1,11 @@
 import React from 'react';
-import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
 import {ThemeProvider} from './app/theme/ThemeContext';
 import {NavigationContainer} from '@react-navigation/native';
 import Routes from './app/routes';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
 
 function App(): React.JSX.Element {
   return (
@@ -19,6 +20,7 @@ function App(): React.JSX.Element {
           </BottomSheetModalProvider>
         </ThemeProvider>
       </GestureHandlerRootView>
+      <Toast />
     </SafeAreaView>
   );
 }

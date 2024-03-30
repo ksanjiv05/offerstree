@@ -18,8 +18,8 @@ class ToastMessage implements IToastMessage {
     type = 'success',
     title,
     text,
-    visibilityTime = 5000,
-    topOffset = 60,
+    visibilityTime = 2000,
+    topOffset = 20,
     onPress,
   }: ToastMessageType): void {
     Toast.show({

@@ -5,6 +5,7 @@ import Profile from '../screens/profile/Profile.tsx';
 import CreateOffer from '../screens/offer/CreateOffer.tsx';
 import OfferView from '../screens/explore/offer/OfferView.tsx';
 import ExploreMap from '../screens/explore/map/ExploreMap.tsx';
+import OfferExplore from '../screens/explore/store/OfferView.tsx';
 
 const routes = [
   {
@@ -41,6 +42,11 @@ const routes = [
     path: '/map',
     name: 'map',
     component: ExploreMap,
+  },
+  {
+    path: '/offer-explore',
+    name: 'offer-explore',
+    component: OfferExplore,
   },
 ];
 

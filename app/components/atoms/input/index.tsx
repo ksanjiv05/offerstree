@@ -15,8 +15,8 @@ import {useTheme} from '../../../theme/ThemeContext';
 
 interface IFormInputProps {
   placeholder?: string;
-  value: string;
-  onChange(value: string): void;
+  value?: string|undefined;
+  onChange?: ((text: string) => void) | undefined;
   maxLength?: number;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters' | undefined;
   editable?: boolean;

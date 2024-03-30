@@ -1,4 +1,4 @@
-export const isValidEmail = (value: string) => {
+export const isValidEmail = (value: string | undefined) => {
   const regEx =
     /^(?=.{1,256}$)([a-zA-Z0-9._-])+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
 

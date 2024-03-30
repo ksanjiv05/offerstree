@@ -1,10 +1,10 @@
-import {View, Text, FlatList} from 'react-native';
+import {View, FlatList} from 'react-native';
 import React from 'react';
 import OfferViewCard from '../../../components/organisms/card/OfferViewCard';
-import { useTheme } from '../../../theme/ThemeContext';
+import {useTheme} from '../../../theme/ThemeContext';
 import styleSheet from './styles';
 
-const OfferView = () => {
+const OfferExplore = () => {
   const theme = useTheme();
   const styles = styleSheet(theme);
   return (
@@ -23,4 +23,4 @@ const OfferView = () => {
   );
 };
 
-export default OfferView;
+export default OfferExplore;

@@ -20,48 +20,35 @@ import {Text} from '../text/Text';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {FlatList} from 'react-native-gesture-handler';
 
+type DataProps = {
+  name: string;
+  id: string;
+};
+
 interface ISelectInputProps {
   placeholder?: string;
-  value: string;
+  value?: string;
   onChange(value: string): void;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters' | undefined;
   appendComponent?: ReactNode | null;
   isErrorMessage?: boolean;
   inputContainerStyle?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<TextStyle>;
+  data?: DataProps[];
 }
 
-const categories = [
-  'smartphones',
-  'laptops',
-  'fragrances',
-  'skincare',
-  'groceries',
-  'home-decoration',
-  'furniture',
-  'tops',
-  'womens-dresses',
-  'womens-shoes',
-  'mens-shirts',
-  'mens-shoes',
-  'mens-watches',
-  'womens-watches',
-  'womens-bags',
-  'womens-jewellery',
-  'sunglasses',
-  'automotive',
-  'motorcycle',
-  'lighting',
-];
-
-const SelectInput = forwardRef<TextInput, ISelectInputProps>((props) => {
+const SelectInput = forwardRef<TextInput, ISelectInputProps>(props => {
   const theme = useTheme();
   const styles = styleSheet(theme);
+  const {data, value = ''} = props;
+  const length = data?.length;
+  const [selectedValue, setSelectedValue] = React.useState(props.placeholder);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
+  const heightOfModal = length && (length < 6 ? '30%' : '60%');
   // variables
-  const snapPoints = useMemo(() => ['60%'], []);
+  const snapPoints = useMemo(() => [heightOfModal], [heightOfModal]);
 
   // callbacks
   const handlePresentModalPress = useCallback(() => {
@@ -72,15 +59,21 @@ const SelectInput = forwardRef<TextInput, ISelectInputProps>((props) => {
     return (
       <View>
         <FlatList
-          data={categories}
+          data={data}
           renderItem={({item}) => {
             return (
-              <TouchableOpacity style={styles.btnStyle}>
-                <Text style={styles.btnText}>{item}</Text>
+              <TouchableOpacity
+                style={styles.btnStyle}
+                onPress={() => {
+                  bottomSheetModalRef.current?.close();
+                  props.onChange(item.id);
+                  setSelectedValue(item.name)
+                }}>
+                <Text style={styles.btnText}>{item.name}</Text>
               </TouchableOpacity>
             );
           }}
-          keyExtractor={item => item}
+          keyExtractor={item => item.id}
         />
       </View>
     );
@@ -103,7 +96,7 @@ const SelectInput = forwardRef<TextInput, ISelectInputProps>((props) => {
               {color: theme.colors.gray5},
               props.inputStyle,
             ]}>
-            {props.placeholder}
+            {selectedValue}
           </Text>
         </View>
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Animated,
   Image,
   Pressable,
   ScrollView,
@@ -16,11 +15,55 @@ import FormInput from '../../components/atoms/input';
 import TextButton from '../../components/atoms/button';
 import Space from '../../components/atoms/space';
 import AnimatedTitle from '../../components/molecules/animated/title';
-import { FacebookIcon, GoogleIcon, XIcon} from '../../assets/icons';
+import {FacebookIcon, GoogleIcon, XIcon} from '../../assets/icons';
+import {toastMessage} from '../../services/ToastMessage';
+import {login} from '../../apis/auth';
+import {setItem} from '../../utils/storage';
 
-type Props = {};
+type Props = {
+  navigation: any;
+};
 
 const Login = ({navigation}: Props) => {
+  const [user, setUser] = React.useState({
+    email: '',
+    password: '',
+  });
+
+  const onChange = (name: string, value: string) => {
+    setUser({...user, [name]: value});
+  };
+
+  const handleSubmit = () => {
+    if (!user.email || user.email === '') {
+      toastMessage.publish({type: 'error', title: 'Please enter your email'});
+      return;
+    }
+    if (!user.password || user.password === '') {
+      toastMessage.publish({
+        type: 'error',
+        title: 'Please enter your password',
+      });
+      return;
+    }
+
+    // api call
+    login({...user, login_type: 'password'})
+      .then(res => {
+        // console.log(res.data, res.data?.data);
+        toastMessage.publish({type: 'success', title: 'Login success'});
+        setItem('user', res.data?.data.user);
+        setItem('token', res.data?.data.token);
+        if (res) {
+          navigation.navigate('offer-view');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        toastMessage.publish({type: 'error', title: 'Login failed'});
+      });
+  };
+
   const theme = useTheme();
   const styles = styleSheet(theme);
   return (
@@ -33,9 +76,17 @@ const Login = ({navigation}: Props) => {
           <AnimatedTitle text="Login" />
           <Space height={35} />
 
-          <FormInput value={'Email'} onChange={() => {}} />
+          <FormInput
+            value={user?.email}
+            placeholder="Email"
+            onChange={text => onChange('email', text)}
+          />
           <Space height={15} />
-          <FormInput value={'Password'} onChange={() => {}} />
+          <FormInput
+            value={user?.password}
+            placeholder="Password"
+            onChange={text => onChange('password', text)}
+          />
           <Space height={25} />
           <View style={styles.rowConatiner}>
             <View>
@@ -45,10 +96,7 @@ const Login = ({navigation}: Props) => {
               </Pressable>
             </View>
             <View style={{width: 100}}>
-              <TextButton
-                labelButton="Login"
-                onPress={() => {}}
-              />
+              <TextButton labelButton="Login" onPress={handleSubmit} />
             </View>
           </View>
         </View>

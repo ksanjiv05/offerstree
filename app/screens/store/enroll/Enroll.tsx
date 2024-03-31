@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import Geolocation from '@react-native-community/geolocation';
 import React from 'react';
 import {useTheme} from '../../../theme/ThemeContext';
 import styleSheet from './styles';
@@ -19,7 +20,7 @@ import {Text} from '../../../components/atoms/text/Text';
 import Switch from '../../../components/atoms/switch';
 import CustomImagePicker from '../../../components/organisms/imagePicker';
 import SelectInput from '../../../components/atoms/select';
-import MapView from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 import {StoreEnrollProps} from '../../../types/store.type';
 import {getCategories} from '../../../apis/category';
 import {toastMessage} from '../../../services/ToastMessage';
@@ -30,7 +31,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import styles from './styles';
-import {addStore} from '../../../apis/store';
+import {addStore, updateAddress} from '../../../apis/store';
 
 const steps = [
   {
@@ -41,17 +42,26 @@ const steps = [
   },
 ];
 
-const initEnrollProps = {
-  founding_date: 'string',
-  founding_location: 'string',
-  website_url: 'string',
-  description: 'string',
-  is_active: '0',
+const getFormData = (data: any) => {
+  const formData = new FormData();
+  Object.keys(data).forEach(key => {
+    formData.append(key, data[key]);
+  });
+  return formData;
 };
 
 type StepFormProps = {
-  setEnrollDataProps: React.Dispatch<React.SetStateAction<StoreEnrollProps>>;
+  setEnrollDataProps: React.Dispatch<React.SetStateAction<any>>;
   stepARef: React.MutableRefObject<any>;
+};
+
+const showErrorMessage = errors => {
+  const keys = Object.keys(errors);
+  const messqge = errors[keys[0]][0];
+  toastMessage.publish({
+    title: messqge,
+    type: 'error',
+  });
 };
 
 const StepA = ({setEnrollDataProps, stepARef}: StepFormProps) => {
@@ -78,30 +88,35 @@ const StepA = ({setEnrollDataProps, stepARef}: StepFormProps) => {
         title: 'Store Name is required!',
         type: 'error',
       });
+      return;
     }
     if (!data.store_category_id || data.store_category_id === '') {
       toastMessage.publish({
         title: 'Store Category is required!',
         type: 'error',
       });
+      return;
     }
     if (!data.founder || data.founder === '') {
       toastMessage.publish({
         title: 'Store Owner Name is required!',
         type: 'error',
       });
+      return;
     }
     if (!data.store_contact_number || data.store_contact_number === '') {
       toastMessage.publish({
         title: 'Store Contact Number is required!',
         type: 'error',
       });
+      return;
     }
     if (!data.store_email || data.store_email === '') {
       toastMessage.publish({
         title: 'Store Email is required!',
         type: 'error',
       });
+      return;
     }
     if (!(data.store_email && isValidEmail(data.store_email))) {
       toastMessage.publish({
@@ -110,26 +125,26 @@ const StepA = ({setEnrollDataProps, stepARef}: StepFormProps) => {
       });
       return;
     }
-    // setEnrollDataProps({
-    //   ...data,
-    //   logo: 'https://admin.offerstree.com/storage/blogs/cover_images/nZQKLIYr4WALrFGjziGqO5pwi7gG363SsBc7TCwf.webp',
-    // });
+
     try {
-      const res = await addStore({...data, logo: ''});
-      console.log('error res--------||--- ', res);
-      if (res&&res?.status === 200) {
+      const formData = getFormData({...data, logo: img?.path});
+      const res = await addStore(formData);
+      if (res && res?.status === 201) {
+        console.log('res.data.data.store.id', res.data.data.store);
+        setEnrollDataProps({id: res.data.data.store.id});
         toastMessage.publish({
           title: 'Store added successfully',
           type: 'success',
         });
         return true;
       }
-    } catch (error) {
-       console.log('error-- res-------- ', error);
+    } catch (error: any) {
+      console.log('error-- res-------- ', error);
       toastMessage.publish({
         title: 'Something went wrong',
         type: 'error',
       });
+      showErrorMessage(error.error.errors);
       return false;
     }
   };
@@ -189,15 +204,95 @@ const StepA = ({setEnrollDataProps, stepARef}: StepFormProps) => {
   );
 };
 
-const StepB = ({setEnrollDataProps}: StepFormProps) => {
+const StepB = ({enrollData, stepBRef}: any) => {
   const height = useSharedValue(200);
   const [zoom, setZoom] = React.useState(false);
   const screenHeight = Dimensions.get('screen').height;
   const theme = useTheme();
   const styles = styleSheet(theme);
+  const [data, setData] = React.useState({
+    address: '',
+    landmark: '',
+    city: '',
+    state: '',
+    country: 'india',
+    postal_code: '',
+    lat: '',
+    lng: '',
+  });
+
+  const [location, setLocation] = React.useState({
+    lat: '',
+    lng: '',
+  });
+
+  const onChange = (key: string, value: string) => {
+    setData(p => ({...p, [key]: value}));
+  };
+
+  const handleNext = async () => {
+    if (!data.address || data.address === '') {
+      toastMessage.publish({
+        title: 'Address is required!',
+        type: 'error',
+      });
+    }
+    if (!data.landmark || data.landmark === '') {
+      toastMessage.publish({
+        title: 'Landmark is required!',
+        type: 'error',
+      });
+    }
+    if (!data.city || data.city === '') {
+      toastMessage.publish({
+        title: 'City is required!',
+        type: 'error',
+      });
+    }
+    if (!data.state || data.state === '') {
+      toastMessage.publish({
+        title: 'State is required!',
+        type: 'error',
+      });
+    }
+    if (!data.postal_code || data.postal_code === '') {
+      toastMessage.publish({
+        title: 'Postal code is required!',
+        type: 'error',
+      });
+    }
+
+    if (!data.lat || data.lat === '' || !data.lng || data.lng === '') {
+      toastMessage.publish({
+        title: 'Please select location on map!',
+        type: 'error',
+      });
+    }
+
+    try {
+      const res = await updateAddress(enrollData.id, data);
+      if (res && res?.status === 200) {
+        toastMessage.publish({
+          title: 'Address added successfully',
+          type: 'success',
+        });
+        return true;
+      }
+    } catch (error: any) {
+      console.log('error-- res-------- ', error);
+      toastMessage.publish({
+        title: 'Something went wrong',
+        type: 'error',
+      });
+      showErrorMessage(error.error.errors);
+
+      return false;
+    }
+  };
+
+  stepBRef.current = handleNext;
 
   const mapRStyle = useAnimatedStyle(() => {
-    console.log(height.value);
     return {
       height: withTiming(height.value),
     };
@@ -210,22 +305,65 @@ const StepB = ({setEnrollDataProps}: StepFormProps) => {
       height.value = 200;
     }
   }, [height, screenHeight, zoom]);
+
+  React.useEffect(() => {
+    Geolocation.getCurrentPosition(info => {
+      console.log(info);
+      setData(p => ({
+        ...p,
+        lat: info.coords.latitude.toString(),
+        lng: info.coords.longitude.toString(),
+      }));
+    });
+  }, []);
   return (
     <View>
       <Animated.View style={mapRStyle}>
         <MapView
           style={{...StyleSheet.absoluteFillObject}}
-          initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
+          initialRegion={
+            data.lat && data.lng
+              ? {
+                  latitude: parseFloat(data.lat),
+                  longitude: parseFloat(data.lng),
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }
+              : {
+                  latitude: 37.78825,
+                  longitude: -122.4324,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }
+          }
           showsUserLocation={true}
-          // followsUserLocation={true}
-          // userLocationCalloutEnabled={true}
+          followsUserLocation={true}
           showsMyLocationButton={true}
-        />
+          onPress={e => {
+            console.log(e.nativeEvent.coordinate);
+            const {latitude, longitude} = e.nativeEvent.coordinate;
+            setData(p => ({
+              ...p,
+              lat: latitude.toString(),
+              lng: longitude.toString(),
+            }));
+          }}>
+          <Marker
+            coordinate={
+              data.lat && data.lng
+                ? {
+                    latitude: parseFloat(data.lat),
+                    longitude: parseFloat(data.lng),
+                  }
+                : {
+                    latitude: 37.78825,
+                    longitude: -122.4324,
+                  }
+            }
+            title="My Marker"
+            description="Some description"
+          />
+        </MapView>
         <TouchableOpacity
           style={styles.mapZoom}
           onPress={() => {
@@ -241,16 +379,28 @@ const StepB = ({setEnrollDataProps}: StepFormProps) => {
         numberOfLines={3}
         inputContainerStyle={{height: 120}}
         inputStyle={{height: 90, textAlignVertical: 'top'}}
+        onChange={text => onChange('address', text)}
       />
       <Space height={20} />
 
-      <FormInput placeholder="Landmark" />
+      <FormInput
+        placeholder="Landmark"
+        onChange={text => onChange('landmark', text)}
+      />
       <Space height={20} />
-      <FormInput placeholder="State" />
+      <FormInput
+        placeholder="State"
+        onChange={text => onChange('state', text)}
+      />
       <Space height={20} />
-      <FormInput placeholder="City" />
+      <FormInput placeholder="City" onChange={text => onChange('city', text)} />
       <Space height={20} />
-      <FormInput placeholder="Pincode" />
+      <FormInput
+        placeholder="Pincode"
+        onChange={text => onChange('postal_code', text)}
+        keyboardType="numeric"
+        maxLength={6}
+      />
     </View>
   );
 };
@@ -281,9 +431,13 @@ const Enroll = () => {
   const theme = useTheme();
   const styles = styleSheet(theme);
   const [activeStep, setActiveStep] = React.useState(0);
-  const [enrollData, setEnrollDataProps] =
-    React.useState<StoreEnrollProps>(initEnrollProps);
+  const [enrollData, setEnrollDataProps] = React.useState<StoreEnrollProps>({
+    id: '',
+  });
   const stepARef = React.useRef<any>(null);
+  const stepBRef = React.useRef<any>(null);
+
+  const [loader, setLoader] = React.useState(false);
 
   const renderStep = () => {
     console.log(activeStep);
@@ -293,7 +447,7 @@ const Enroll = () => {
           <StepA setEnrollDataProps={setEnrollDataProps} stepARef={stepARef} />
         );
       case 1:
-        return <StepB setEnrollDataProps={setEnrollDataProps} />;
+        return <StepB enrollData={enrollData} stepBRef={stepBRef} />;
       case 2:
         return <StepFinal setEnrollDataProps={setEnrollDataProps} />;
       default:
@@ -306,7 +460,7 @@ const Enroll = () => {
     //   setActiveStep(activeStep + 1);
 
     // }
-
+    setLoader(true);
     switch (activeStep) {
       case 0:
         const status = await (stepARef && stepARef?.current());
@@ -316,12 +470,19 @@ const Enroll = () => {
         }
         break;
       case 1:
-        return <StepB setEnrollDataProps={setEnrollDataProps} />;
+        const statusB = await (stepBRef && stepBRef?.current());
+        console.log('statusB', statusB);
+        if (statusB) {
+          setActiveStep(activeStep + 1);
+        }
+        break;
+
       case 2:
         return <StepFinal setEnrollDataProps={setEnrollDataProps} />;
       default:
         return <StepA setEnrollDataProps={setEnrollDataProps} />;
     }
+    setLoader(false);
   };
 
   const handleBack = () => {
@@ -352,7 +513,11 @@ const Enroll = () => {
           />
         </View>
         <View style={{flex: 1}}>
-          <TextButton onPress={handleNext} labelButton="Next" />
+          <TextButton
+            onPress={handleNext}
+            isLoader={loader}
+            labelButton="Next"
+          />
         </View>
       </View>
     </View>

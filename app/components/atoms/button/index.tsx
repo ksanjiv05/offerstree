@@ -1,7 +1,14 @@
-import {StyleProp, Text, TextStyle, TouchableOpacity, ViewStyle} from 'react-native';
+import {
+  StyleProp,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle,
+} from 'react-native';
 import React from 'react';
 import styleSheet from './styles';
 import {useTheme} from '../../../theme/ThemeContext';
+import LoaderKit from 'react-native-loader-kit';
 
 interface ITextButtonProps {
   onPress(): void;
@@ -9,6 +16,7 @@ interface ITextButtonProps {
   buttonStyle?: StyleProp<ViewStyle>;
   labelButtonStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
+  isLoader?: boolean;
 }
 
 const TextButton = (props: ITextButtonProps) => {
@@ -26,7 +34,18 @@ const TextButton = (props: ITextButtonProps) => {
           styles.defaultLabelButtonStyle(props.disabled!),
           props.labelButtonStyle,
         ]}>
-        {props.labelButton}
+        {props.isLoader ? (
+          <LoaderKit
+            color="#ffffff"
+            name="BallPulse"
+            style={{
+              height: 30,
+              width: 30,
+            }}
+          />
+        ) : (
+          props.labelButton
+        )}
       </Text>
     </TouchableOpacity>
   );

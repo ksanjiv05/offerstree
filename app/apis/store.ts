@@ -3,7 +3,7 @@ import {APICore} from './apiCore';
 const apiCore = new APICore();
 
 export const addStore = async (data: any) => {
-  const res = await apiCore.create(`${API_V1}/user/stores`, data);
+  const res = await apiCore.createWithFile(`${API_V1}/user/stores`, data);
   return res;
 };
 

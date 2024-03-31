@@ -31,7 +31,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import styles from './styles';
-import {addStore, updateAddress} from '../../../apis/store';
+import {addStore, updateAddress, updateDiscription} from '../../../apis/store';
 
 const steps = [
   {
@@ -127,8 +127,7 @@ const StepA = ({setEnrollDataProps, stepARef}: StepFormProps) => {
     }
 
     try {
-      const formData = getFormData({...data, logo: img?.path});
-      const res = await addStore(formData);
+      const res = await addStore({...data, logo: img?.path});
       if (res && res?.status === 201) {
         console.log('res.data.data.store.id', res.data.data.store);
         setEnrollDataProps({id: res.data.data.store.id});
@@ -405,14 +404,42 @@ const StepB = ({enrollData, stepBRef}: any) => {
   );
 };
 
-const StepFinal = ({setEnrollDataProps}: StepFormProps) => {
+const StepFinal = ({enrollData, stepCRef}: any) => {
+  const [discrption, setDiscrption] = React.useState('');
+  const [storeStatus, setStoreStatus] = React.useState(true);
+
+  const handleNext = async () => {
+    try {
+      const res = await updateDiscription(enrollData.id, {
+        description: discrption,
+        is_active: storeStatus ? '0' : '1',
+      });
+      if (res && res?.status === 200) {
+        toastMessage.publish({
+          title: 'store description added successfully',
+          type: 'success',
+        });
+        return true;
+      }
+    } catch (error: any) {
+      console.log('error-- res-------- ', error);
+      toastMessage.publish({
+        title: 'Something went wrong',
+        type: 'error',
+      });
+      showErrorMessage(error.error.errors);
+
+      return false;
+    }
+  };
+  stepCRef.current = handleNext;
   return (
     <View>
       <Space height={40} />
       <Text style={{color: '#fff', fontSize: 20}}>Store Status</Text>
       <Space height={10} />
 
-      <Switch isActive={true} />
+      <Switch isActive={storeStatus} onPress={() => setStoreStatus(p => !p)} />
       <Space height={20} />
 
       <FormInput
@@ -420,6 +447,7 @@ const StepFinal = ({setEnrollDataProps}: StepFormProps) => {
         multiline
         numberOfLines={6}
         inputContainerStyle={{height: 200}}
+        onChange={text => setDiscrption(text)}
         inputStyle={{height: 170, textAlignVertical: 'top'}}
       />
       <Space height={20} />
@@ -436,6 +464,7 @@ const Enroll = () => {
   });
   const stepARef = React.useRef<any>(null);
   const stepBRef = React.useRef<any>(null);
+  const stepCRef = React.useRef<any>(null);
 
   const [loader, setLoader] = React.useState(false);
 
@@ -449,7 +478,7 @@ const Enroll = () => {
       case 1:
         return <StepB enrollData={enrollData} stepBRef={stepBRef} />;
       case 2:
-        return <StepFinal setEnrollDataProps={setEnrollDataProps} />;
+        return <StepFinal enrollData={enrollData} stepCRef={stepCRef} />;
       default:
         return <StepA setEnrollDataProps={setEnrollDataProps} />;
     }
@@ -478,7 +507,13 @@ const Enroll = () => {
         break;
 
       case 2:
-        return <StepFinal setEnrollDataProps={setEnrollDataProps} />;
+        const statusC = await (stepCRef && stepCRef?.current());
+        console.log('statusC', statusC);
+        if (statusB) {
+          setActiveStep(activeStep + 1);
+        }
+        break;
+
       default:
         return <StepA setEnrollDataProps={setEnrollDataProps} />;
     }

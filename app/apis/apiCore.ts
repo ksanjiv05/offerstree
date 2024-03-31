@@ -151,7 +151,7 @@ class APICore {
     const config = {
       headers: {
         ...axios.defaults.headers,
-        'content-type': 'multipart/form-data',
+        'Content-Type': 'multipart/form-data',
       },
     };
     return axios.post(url, formData, config);

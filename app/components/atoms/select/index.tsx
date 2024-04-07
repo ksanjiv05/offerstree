@@ -40,13 +40,13 @@ interface ISelectInputProps {
 const SelectInput = forwardRef<TextInput, ISelectInputProps>(props => {
   const theme = useTheme();
   const styles = styleSheet(theme);
-  const {data, value = ''} = props;
-  const length = data?.length;
+  const {data} = props;
+  const length = data && data.length + 1;
   const [selectedValue, setSelectedValue] = React.useState(props.placeholder);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
   const heightOfModal = length && (length < 6 ? '30%' : '60%');
+  console.log('data', length, heightOfModal);
   // variables
   const snapPoints = useMemo(() => [heightOfModal], [heightOfModal]);
 
@@ -67,7 +67,7 @@ const SelectInput = forwardRef<TextInput, ISelectInputProps>(props => {
                 onPress={() => {
                   bottomSheetModalRef.current?.close();
                   props.onChange(item.id);
-                  setSelectedValue(item.name)
+                  setSelectedValue(item.name);
                 }}>
                 <Text style={styles.btnText}>{item.name}</Text>
               </TouchableOpacity>
@@ -119,4 +119,4 @@ const SelectInput = forwardRef<TextInput, ISelectInputProps>(props => {
   );
 });
 
-export default SelectInput;
+export default React.memo(SelectInput);

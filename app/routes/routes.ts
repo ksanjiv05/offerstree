@@ -6,6 +6,8 @@ import CreateOffer from '../screens/offer/CreateOffer.tsx';
 import OfferView from '../screens/explore/offer/OfferView.tsx';
 import ExploreMap from '../screens/explore/map/ExploreMap.tsx';
 import OfferExplore from '../screens/explore/store/OfferView.tsx';
+import StoreList from '../screens/common/list/StoreList.tsx';
+import StoreView from '../screens/common/details/StoreView.tsx';
 
 const routes = [
   {
@@ -32,6 +34,16 @@ const routes = [
     path: '/offer-create',
     name: 'offer-create',
     component: CreateOffer,
+  },
+  {
+    path: '/store-list',
+    name: 'store-list',
+    component: StoreList,
+  },
+  {
+    path: '/store-view',
+    name: 'store-view',
+    component: StoreView,
   },
   {
     path: '/offer-view',

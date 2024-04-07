@@ -43,7 +43,7 @@ interface IFormInputProps {
 const FormInput = forwardRef<TextInput, IFormInputProps>((props, ref) => {
   const theme = useTheme();
   const styles = styleSheet(theme);
-
+console.log("--")
   return (
     <View
       style={[
@@ -82,7 +82,7 @@ const FormInput = forwardRef<TextInput, IFormInputProps>((props, ref) => {
   );
 });
 
-export default FormInput;
+export default React.memo(FormInput);
 
 interface IButtonInputProps {
   placeholder?: string;

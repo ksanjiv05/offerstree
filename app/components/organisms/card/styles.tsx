@@ -18,6 +18,7 @@ export default ({colors}: ITheme) => {
     title: {
       fontSize: 20,
       fontWeight: '600',
+      textTransform: 'capitalize',
     },
     rowAlignmentCenter: {flexDirection: 'row', alignItems: 'center'},
     rowSpaceBetween: {flexDirection: 'row', justifyContent: 'space-between'},

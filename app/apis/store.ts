@@ -14,3 +14,7 @@ export const updateAddress = async (storeId: string, data: any) => {
 export const updateDiscription = async (storeId: string, data: any) => {
   return apiCore.update(`${API_V1}/user/stores/${storeId}/description`, data);
 };
+
+export const getStores = async (data: any) => {
+  return apiCore.get(`${API_V1}/user/stores`, data);
+};

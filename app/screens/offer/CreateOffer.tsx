@@ -11,6 +11,7 @@ import {getStores} from '../../apis/store';
 import {createOffer, getOfferCategories} from '../../apis/offer';
 import moment from 'moment';
 import {toastMessage} from '../../services/ToastMessage';
+import CustomImagePicker from '../../components/organisms/imagePicker';
 
 const offerInit = {
   title: '',
@@ -20,13 +21,15 @@ const offerInit = {
   end_date: '',
   total_quantity: 0,
   discount_type: 'value',
-  discount_amount: '',
-  max_discount_amount: '',
-  percentage_value: '',
-  min_purchase_amount: '',
+  discount_amount: 0,
+  max_discount_amount: 0,
+  percentage_value: 0,
+  min_purchase_amount: 0,
   color: '',
   description: '',
   is_active: '0',
+  offer_type: 'standard',
+  offer_banner: null,
 };
 
 const CreateOffer = () => {
@@ -41,6 +44,8 @@ const CreateOffer = () => {
   const [offer, setOffer] = useState(offerInit);
   const [stores, setStores] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [activeTab, setActiveTab] = useState(0);
+  const [img, setImg] = useState(null);
 
   const onChange = (key: string, value: any) => {
     setOffer(p => ({...p, [key]: value}));
@@ -56,22 +61,43 @@ const CreateOffer = () => {
       ...offer,
       start_date: moment(startDate).format('YYYY-MM-DD'),
       end_date: moment(endDate).format('YYYY-MM-DD'),
+      offer_type: activeTab === 0 ? 'standard' : 'banner',
+      offer_banner: {
+        uri: img?.path,
+        type: 'image/jpeg',
+        name: 'photo.jpg',
+      },
     };
-    if (
-      data.title === '' ||
-      data.grabe_code === '' ||
-      data.offer_category_id === 0 ||
-      data.start_date === '' ||
-      data.end_date === '' ||
-      data.total_quantity === 0 ||
-      (data.discount_amount === '' && data.percentage_value === '') ||
-      data.min_purchase_amount === ''
-    ) {
-      toastMessage.publish({
-        title: 'Please fill all the fields',
-        type: 'error',
-      });
-      return;
+    if (activeTab === 0) {
+      if (
+        data.title === '' ||
+        data.offer_category_id === 0 ||
+        data.start_date === '' ||
+        data.end_date === '' ||
+        data.total_quantity === 0 ||
+        (data.discount_amount === '' && data.percentage_value === '') ||
+        data.grabe_code === '' ||
+        data.min_purchase_amount === ''
+      ) {
+        toastMessage.publish({
+          title: 'Please fill all the fields',
+          type: 'error',
+        });
+        return;
+      }
+    } else {
+      if (
+        data.title === '' ||
+        data.offer_category_id === 0 ||
+        data.start_date === '' ||
+        data.end_date === ''
+      ) {
+        toastMessage.publish({
+          title: 'Please fill all the fields',
+          type: 'error',
+        });
+        return;
+      }
     }
 
     try {
@@ -123,6 +149,29 @@ const CreateOffer = () => {
   return (
     <View style={styles.container}>
       <Space height={20} />
+      <View
+        style={{
+          height: 50,
+          flexDirection: 'row',
+        }}>
+        <TextButton
+          buttonStyle={{
+            flex: 1,
+            marginLeft: 10,
+            backgroundColor: activeTab == 0 ? theme.colors.blue : undefined,
+          }}
+          onPress={() => setActiveTab(0)}
+          labelButton={'Standered'}></TextButton>
+        <TextButton
+          buttonStyle={{
+            flex: 1,
+            marginRight: 10,
+            backgroundColor: activeTab == 1 ? theme.colors.blue : undefined,
+          }}
+          onPress={() => setActiveTab(1)}
+          labelButton={'Banner'}></TextButton>
+      </View>
+      <Space height={20} />
       <ScrollView style={{paddingHorizontal: 10}}>
         <FormInput
           placeholder="Enter Offer Name"
@@ -141,11 +190,16 @@ const CreateOffer = () => {
           data={categories}
           onChange={(value: string) => onChange('offer_category_id', value)}
         />
-        <Space height={20} />
-        <FormInput
-          placeholder="Enter Offer Code"
-          onChange={(value: string) => onChange('grabe_code', value)}
-        />
+
+        {activeTab === 0 && (
+          <>
+            <Space height={20} />
+            <FormInput
+              placeholder="Enter Offer Code"
+              onChange={(value: string) => onChange('grabe_code', value)}
+            />
+          </>
+        )}
         <Space height={20} />
         <ButtonInput
           onPress={() => setStartDateOpen(p => !p)}
@@ -161,51 +215,70 @@ const CreateOffer = () => {
           onChange={(value: string) => onChange('end_date', value)}
         />
         <Space height={20} />
-        <FormInput
-          placeholder="Total Quantity"
-          keyboardType="numeric"
-          onChange={(value: string) => onChange('total_quantity', value)}
-        />
-        <Space height={20} />
-        <View
-          style={{
-            flexDirection: 'row',
-          }}>
-          <View style={{flex: 1, marginRight: 5}}>
-            <FormInput
-              placeholder="Discount Percentage"
-              keyboardType="numeric"
-              onChange={(value: string) => onChange('percentage_value', value)}
-            />
-          </View>
-          <Text style={{color: '#fff', lineHeight: 55}}>OR</Text>
-          <View style={{flex: 1, marginLeft: 5}}>
-            <FormInput
-              placeholder="Flat Discount"
-              keyboardType="numeric"
-              onChange={(value: string) => onChange('discount_amount', value)}
-            />
-          </View>
-        </View>
-
-        {parseInt(offer.percentage_value) > 0 && (
+        {activeTab === 0 ? (
           <>
-            <Space height={20} />
             <FormInput
-              placeholder="Max Discount Amount"
+              placeholder="Total Quantity"
               keyboardType="numeric"
               onChange={(value: string) =>
-                onChange('max_discount_amount', value)
+                onChange('total_quantity', parseInt(value))
+              }
+            />
+            <Space height={20} />
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View style={{flex: 1, marginRight: 5}}>
+                <FormInput
+                  placeholder="Discount Percentage"
+                  keyboardType="numeric"
+                  onChange={(value: string) =>
+                    onChange('percentage_value', parseInt(value))
+                  }
+                />
+              </View>
+              <Text style={{color: '#fff', lineHeight: 55}}>OR</Text>
+              <View style={{flex: 1, marginLeft: 5}}>
+                <FormInput
+                  placeholder="Flat Discount"
+                  keyboardType="numeric"
+                  onChange={(value: string) =>
+                    onChange('discount_amount', parseInt(value))
+                  }
+                />
+              </View>
+            </View>
+
+            {parseInt(offer.percentage_value) > 0 && (
+              <>
+                <Space height={20} />
+                <FormInput
+                  placeholder="Max Discount Amount"
+                  keyboardType="numeric"
+                  onChange={(value: string) =>
+                    onChange('max_discount_amount', value)
+                  }
+                />
+              </>
+            )}
+            <Space height={20} />
+            <FormInput
+              placeholder="Min Purchase Amount"
+              keyboardType="numeric"
+              onChange={(value: string) =>
+                onChange('min_purchase_amount', value)
               }
             />
           </>
+        ) : (
+          <View
+            style={{
+              height: 180,
+            }}>
+            <CustomImagePicker setImg={setImg} isGallary={true} />
+          </View>
         )}
-        <Space height={20} />
-        <FormInput
-          placeholder="Min Purchase Amount"
-          keyboardType="numeric"
-          onChange={(value: string) => onChange('min_purchase_amount', value)}
-        />
       </ScrollView>
       <DatePicker
         modal

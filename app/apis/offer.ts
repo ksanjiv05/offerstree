@@ -5,11 +5,14 @@ const apiCore = new APICore();
 export const createOffer = async (data: any) => {
   // //https://offerstree.com/api
   // /v1/ersu / store / {storeId} / offers;
-  return apiCore.create(`${API_V1}/user/store/${data.store_id}/offers`, data);
+  return apiCore.createWithFile(
+    `${API_V1}/user/store/${data.store_id}/offers`,
+    data,
+  );
 };
 
 export const getOffers = async (data: any) => {
-  return apiCore.get(`${API_V1}/user/offers`, data);
+  return apiCore.get(`${API_V1}/offers`, {params: data});
 };
 
 export const getOfferCategories = async (data: any) => {

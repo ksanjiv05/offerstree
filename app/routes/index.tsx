@@ -29,7 +29,7 @@ const Routes = ({}: Props) => {
   }
   return (
     <Stack.Navigator
-      initialRouteName={isAuthenticated ? 'store-list' : 'login'}>
+      initialRouteName={isAuthenticated ? 'offer-create' : 'login'}>
       {routes.map((route, index) => {
         return (
           <Stack.Screen

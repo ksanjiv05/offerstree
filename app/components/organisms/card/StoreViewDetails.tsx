@@ -16,7 +16,7 @@ const TextCard = ({title = '', text = ''}) => {
       <Text style={[{fontSize: 17, fontWeight: 'bold', color: '#fff'}]}>
         {title}:{' '}
       </Text>
-      <Text style={{fontSize: 17, color: '#fff'}}>{text??"N/A"}</Text>
+      <Text style={{fontSize: 17, color: '#fff'}}>{text ?? 'N/A'}</Text>
     </View>
   );
 };
@@ -26,11 +26,10 @@ const StoreViewDetailsCard = ({
   founder = '',
   address,
   store_email = '',
-  store_name = '',
   store_contact_number = '',
   founding_date = '',
   website_url = '',
-  title= '',
+  title = '',
 }) => {
   const theme = useTheme();
   const styles = styleSheet(theme);

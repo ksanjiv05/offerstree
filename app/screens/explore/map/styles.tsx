@@ -40,12 +40,19 @@ export default ({colors}: ITheme) => {
       color: colors.green,
       fontSize: 18,
       marginLeft: 10,
-
     },
     textM: {
       color: colors.white,
       fontSize: 18,
       marginLeft: 10,
+    },
+    backIcon: {
+      position: 'absolute',
+      top: 20,
+      left: 20,
+      backgroundColor: colors.white,
+      padding: 10,
+      borderRadius: 50,
     },
     rowAlignmentCenter: {flexDirection: 'row', alignItems: 'center'},
   });

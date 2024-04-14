@@ -6,7 +6,7 @@ import {LocationIcon, SettingsIcon} from '../../../assets/icons';
 import Space from '../../atoms/space';
 import TextButton from '../../atoms/button';
 import {Text} from '../../atoms/text/Text';
-import { AirbnbRating} from 'react-native-ratings';
+import {AirbnbRating} from 'react-native-ratings';
 
 const OfferViewCard = ({text = '', location = ''}) => {
   const theme = useTheme();
@@ -45,15 +45,16 @@ const OfferViewCard = ({text = '', location = ''}) => {
   );
 };
 
-export const OfferCard = ({text = '', location = ''}) => {
+export const OfferCard = ({offer,onPress}) => {
   const theme = useTheme();
   const styles = styleSheet(theme);
+  const {title, location, text,grabe_code,percentage_value} = offer;
   return (
     <View style={styles.container}>
       <View style={styles.rowConatiner}>
         <View style={styles.pic} />
         <View style={{paddingLeft: 10}}>
-          <Text style={styles.title}>Store Name</Text>
+          <Text style={styles.title}>{title}</Text>
           <Text style={{color: theme.colors.gray5}}>Category</Text>
         </View>
       </View>
@@ -62,10 +63,12 @@ export const OfferCard = ({text = '', location = ''}) => {
       <View
         style={[styles.rowSpaceBetween, {alignItems: 'center', height: 50}]}>
         <View style={styles.offTextContainer}>
-          <Text style={styles.title}>FC100</Text>
-          <Text style={styles.offText}>OFF 100%</Text>
+          <Text style={[styles.title, {textTransform: 'uppercase'}]}>
+            {grabe_code}
+          </Text>
+          <Text style={styles.offText}>OFF {percentage_value}%</Text>
         </View>
-        <View style={{flex:1,alignItems:"flex-end",marginRight:15}}>
+        <View style={{flex: 1, alignItems: 'flex-end', marginRight: 15}}>
           <TouchableOpacity>
             <SettingsIcon />
           </TouchableOpacity>
@@ -74,6 +77,7 @@ export const OfferCard = ({text = '', location = ''}) => {
           <TextButton
             buttonStyle={{height: 45, width: 70}}
             labelButton="View"
+            onPress={onPress}
           />
         </View>
       </View>

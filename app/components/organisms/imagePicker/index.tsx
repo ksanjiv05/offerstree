@@ -5,6 +5,7 @@ import {
   Alert,
   PermissionsAndroid,
   Image,
+  View,
 } from 'react-native';
 import React from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -15,15 +16,20 @@ import {
   Permission,
   check,
 } from 'react-native-permissions';
+import {UploadIcon} from '../../../assets/icons';
 
 type CustomeImagePickerProps = {
   setImg: React.Dispatch<React.SetStateAction<null>>;
   isGallary?: boolean;
+  width?: number;
+  height?: number;
 };
 
 const CustomImagePicker = ({
   isGallary = true,
   setImg,
+  width=400,
+  height=400,
 }: CustomeImagePickerProps) => {
   const [image, setImage] = React.useState(undefined);
   const requestPermission = async (permission: Permission) => {
@@ -97,8 +103,8 @@ const CustomImagePicker = ({
 
   const pickImageFromGallery = () => {
     ImagePicker.openPicker({
-      width: 300,
-      height: 400,
+      width,
+      height,
       cropping: true,
     })
       .then((image: any) => {
@@ -131,11 +137,25 @@ const CustomImagePicker = ({
   }, []);
   return (
     <TouchableOpacity
-      style={{flex: 1, backgroundColor: 'blue'}}
+      style={{
+        flex: 1,
+        backgroundColor: '#fff',
+      }}
       onPress={() =>
         isGallary ? handlePickImageFromGallery() : handleTakePhotoFromCamera()
       }>
-      <Image source={{uri: image}} style={{flex: 1}} />
+      {image ? (
+        <Image source={{uri: image}} style={{flex: 1}} />
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <UploadIcon color="red" />
+        </View>
+      )}
     </TouchableOpacity>
   );
 };

@@ -1,12 +1,13 @@
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Touchable, TouchableOpacity, View} from 'react-native';
 import React, {useCallback, useMemo, useRef} from 'react';
 import {useTheme} from '../../../theme/ThemeContext';
 import styleSheet from './styles';
 import MapView from 'react-native-maps';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {Text} from '../../../components/atoms/text/Text';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const ExploreMap = () => {
+const ExploreMap = ({onBackPress}) => {
   const theme = useTheme();
   const styles = styleSheet(theme);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -20,7 +21,7 @@ const ExploreMap = () => {
   }, []);
 
   React.useEffect(() => {
-    handlePresentModalPress();
+    // handlePresentModalPress();
   }, [handlePresentModalPress]);
 
   return (
@@ -42,6 +43,9 @@ const ExploreMap = () => {
           <Text>Bottom Sheet Content</Text>
         </View>
       </BottomSheetModal>
+      <TouchableOpacity style={styles.backIcon} onPress={onBackPress}>
+        <Icon name="keyboard-backspace" size={25} />
+      </TouchableOpacity>
     </View>
   );
 };

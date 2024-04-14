@@ -8,6 +8,8 @@ import ExploreMap from '../screens/explore/map/ExploreMap.tsx';
 import OfferExplore from '../screens/explore/store/OfferView.tsx';
 import StoreList from '../screens/common/list/StoreList.tsx';
 import StoreView from '../screens/common/details/StoreView.tsx';
+import Explore from '../screens/explore/Explore.tsx';
+import OfferDetails from '../screens/explore/offer/OfferDetails.tsx';
 
 const routes = [
   {
@@ -58,7 +60,12 @@ const routes = [
   {
     path: '/offer-explore',
     name: 'offer-explore',
-    component: OfferExplore,
+    component: Explore,
+  },
+  {
+    path: '/offer-details',
+    name: 'offer-details',
+    component: OfferDetails,
   },
 ];
 

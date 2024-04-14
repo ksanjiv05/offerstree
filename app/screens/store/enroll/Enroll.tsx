@@ -127,7 +127,14 @@ const StepA = ({setEnrollDataProps, stepARef}: StepFormProps) => {
     }
 
     try {
-      const res = await addStore({...data, logo: img?.path});
+      const res = await addStore({
+        ...data,
+        logo: {
+          uri: img?.path,
+          type: 'image/jpeg',
+          name: 'photo.jpg',
+        },
+      });
       if (res && res?.status === 201) {
         console.log('res.data.data.store.id', res.data.data.store);
         setEnrollDataProps({id: res.data.data.store.id});
@@ -138,7 +145,6 @@ const StepA = ({setEnrollDataProps, stepARef}: StepFormProps) => {
         return true;
       }
     } catch (error: any) {
-      console.log('error-- res-------- ', error);
       toastMessage.publish({
         title: 'Something went wrong',
         type: 'error',

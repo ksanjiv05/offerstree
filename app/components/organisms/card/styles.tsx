@@ -6,7 +6,7 @@ export default ({colors}: ITheme) => {
     container: {
       backgroundColor: '#fff',
       padding: 10,
-      marginVertical: 5,
+      marginVertical: 2,
     },
     rowConatiner: {height: 70, flexDirection: 'row', alignItems: 'center'},
     pic: {

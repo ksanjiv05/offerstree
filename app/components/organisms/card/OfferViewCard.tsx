@@ -1,12 +1,13 @@
-import {TouchableOpacity, View} from 'react-native';
+import {Image, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {useTheme} from '../../../theme/ThemeContext';
 import styleSheet from './styles';
-import {LocationIcon, SettingsIcon} from '../../../assets/icons';
+import {LocationIcon} from '../../../assets/icons';
 import Space from '../../atoms/space';
 import TextButton from '../../atoms/button';
 import {Text} from '../../atoms/text/Text';
 import {AirbnbRating} from 'react-native-ratings';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const OfferViewCard = ({text = '', location = ''}) => {
   const theme = useTheme();
@@ -45,42 +46,90 @@ const OfferViewCard = ({text = '', location = ''}) => {
   );
 };
 
-export const OfferCard = ({offer,onPress}) => {
+export const OfferCard = ({offer}) => {
   const theme = useTheme();
   const styles = styleSheet(theme);
-  const {title, location, text,grabe_code,percentage_value} = offer;
+  const {
+    title,
+    location,
+    text,
+    grabe_code,
+    percentage_value,
+    offer_banner_url = '',
+  } = offer;
   return (
     <View style={styles.container}>
       <View style={styles.rowConatiner}>
         <View style={styles.pic} />
-        <View style={{paddingLeft: 10}}>
+        <View style={{paddingLeft: 10, flex: 1}}>
           <Text style={styles.title}>{title}</Text>
           <Text style={{color: theme.colors.gray5}}>Category</Text>
+        </View>
+        <View
+          style={{
+            width: 60,
+            height: 50,
+            alignItems: 'center',
+            flexDirection: 'row',
+          }}>
+          <Icon name="star" color={theme.colors.gold} size={20} />
+          <Text
+            style={{color: theme.colors.green, fontSize: 20, marginLeft: 5}}>
+            4.5
+          </Text>
         </View>
       </View>
 
       <Space height={5} />
-      <View
-        style={[styles.rowSpaceBetween, {alignItems: 'center', height: 50}]}>
-        <View style={styles.offTextContainer}>
-          <Text style={[styles.title, {textTransform: 'uppercase'}]}>
-            {grabe_code}
-          </Text>
-          <Text style={styles.offText}>OFF {percentage_value}%</Text>
+      {offer_banner_url === null || offer_banner_url === '' ? (
+        <View
+          style={[styles.rowSpaceBetween, {alignItems: 'center', height: 50}]}>
+          <View style={styles.offTextContainer}>
+            <Text style={[styles.title, {textTransform: 'uppercase'}]}>
+              {grabe_code}
+            </Text>
+            <Text style={styles.offText}>OFF {percentage_value}%</Text>
+          </View>
+          {/* <View style={{flex: 1, alignItems: 'flex-end', marginRight: 15}}>
+            <TouchableOpacity>
+              <SettingsIcon />
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TextButton
+              buttonStyle={{height: 45, width: 70}}
+              labelButton="View"
+              // onPress={onPress}
+            />
+          </View> */}
         </View>
-        <View style={{flex: 1, alignItems: 'flex-end', marginRight: 15}}>
-          <TouchableOpacity>
-            <SettingsIcon />
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TextButton
-            buttonStyle={{height: 45, width: 70}}
-            labelButton="View"
-            onPress={onPress}
+      ) : (
+        <View
+          style={{
+            height: 200,
+            width: '100%',
+            backgroundColor: theme.colors.gray1,
+            borderRadius: 10,
+            overflow: 'hidden',
+          }}>
+          <Image
+            source={{uri: offer_banner_url}}
+            style={{width: '100%', height: 200}}
           />
         </View>
-      </View>
+      )}
+
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          right: 10,
+          width: 60,
+          height: 50,
+          alignItems: 'center',
+        }}>
+        <Icon name="heart" color={theme.colors.gray3} size={30} />
+      </TouchableOpacity>
     </View>
   );
 };

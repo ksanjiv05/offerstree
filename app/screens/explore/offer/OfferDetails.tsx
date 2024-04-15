@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, Image} from 'react-native';
 import React from 'react';
 import {useTheme} from '../../../theme/ThemeContext';
 import styleSheet from './styles';
@@ -7,6 +7,7 @@ import Space from '../../../components/atoms/space';
 import Divider from '../../../components/atoms/divider';
 import {AirbnbRating} from 'react-native-ratings';
 import TextButton from '../../../components/atoms/button';
+import moment from 'moment';
 
 const OfferDetails = ({route}) => {
   const theme = useTheme();
@@ -25,7 +26,7 @@ const OfferDetails = ({route}) => {
     is_active = 1,
     max_discount_amount = '999.00',
     min_purchase_amount = '55.00',
-    offer_category_id = 2,
+    offer_category = null,
     percentage_value = '10.00',
     start_date = '2024-04-04',
     store_id = 3,
@@ -33,24 +34,32 @@ const OfferDetails = ({route}) => {
     total_quantity = 70,
     updated_at = '2024-04-12T08:01:31.000000Z',
     used_quantity = 0,
+    store = null,
   } = offerDetails;
 
+  console.log("address",store)
   return (
     <View style={styles.container}>
       <View style={styles.rowConatiner}>
-        <View style={styles.pic} />
+        <View style={styles.pic}>
+          <Image source={{uri: store?.logo}} style={styles.pic} />
+        </View>
         <View style={{paddingLeft: 15}}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={{color: theme.colors.green}}>Category</Text>
+          <Text style={{color: theme.colors.green}}>
+            {offer_category?.name}
+          </Text>
         </View>
       </View>
       <Space height={15} />
       <View style={styles.rowAlignmentCenter}>
-        <View style={{transform: [{scale: 0.7}]}}>
+        <View style={{transform: [{scale: 0.5}]}}>
           <LocationIcon color="gray" />
         </View>
-        <Text style={{color: theme.colors.green}}>
-          90 foot Kankarbagh, Patna - 800020
+        <Text style={{color: theme.colors.green,fontSize:17}}>
+          {store.address
+            ? `${store?.address?.city} ${store?.address?.state} ${store?.address?.country}-${store?.address?.postal_code}`
+            : 'N/A'}
         </Text>
       </View>
       <Space height={15} />
@@ -66,15 +75,7 @@ const OfferDetails = ({route}) => {
         <Text style={styles.htitle}>Offer title</Text>
         <Space height={10} />
 
-        <Text style={styles.text}>
-          It is a long established fact that a reader will be distracted by the
-          readable content of a page when looking at its layout. The point of
-          using Lorem Ipsum is that it has a more-or-less normal distribution of
-          letters, as opposed to using 'Content here, content here', making it
-          look like readable English. Many desktop publishing packages and web
-          page editors now use Lorem Ipsum as their default model text, and a
-          search for 'lorem ipsum' will uncover... 
-        </Text>
+        <Text style={styles.text}>{description ? description : 'N/A'}</Text>
       </View>
       <Space height={25} />
       <View style={styles.rowAlignmentCenter}>
@@ -82,23 +83,40 @@ const OfferDetails = ({route}) => {
           <IdleIcon color={theme.colors.green} />
         </View>
         <Text style={styles.textM}>Expires on </Text>
-        <Text style={styles.textBlueM}>20-feb-2024</Text>
+        <Text style={styles.textBlueM}>
+          {moment(end_date).format('DD-MM-YYY')}
+        </Text>
       </View>
       <Space height={10} />
-      <View style={styles.rowAlignmentCenter}>
-        <View>
-          <IdleIcon color={theme.colors.green} />
-        </View>
-        <Text style={styles.textBlueM}>Flat</Text>
-        <Text style={styles.textM}>discount type</Text>
-      </View>
-      <Space height={10} />
+      {percentage_value > 0 && (
+        <>
+          <View style={styles.rowAlignmentCenter}>
+            <View>
+              <IdleIcon color={theme.colors.green} />
+            </View>
+            <Text style={styles.textBlueM}>discount</Text>
+            <Text style={styles.textM}> {percentage_value}%</Text>
+          </View>
+          <Space height={10} />
+        </>
+      )}
 
       <View style={styles.rowAlignmentCenter}>
         <View>
           <IdleIcon color={theme.colors.green} />
         </View>
-        <Text style={styles.textBlueM}>Flat of 200.0</Text>
+        <Text style={styles.textBlueM}>
+          {percentage_value > 0
+            ? `Max discount ${max_discount_amount}`
+            : `Discount ${discount_amount}`}
+        </Text>
+      </View>
+      <Space height={10} />
+      <View style={styles.rowAlignmentCenter}>
+        <View>
+          <IdleIcon color={theme.colors.green} />
+        </View>
+        <Text style={styles.textBlueM}>Min Purchase {min_purchase_amount}</Text>
       </View>
 
       <View

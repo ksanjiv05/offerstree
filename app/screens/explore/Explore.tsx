@@ -30,7 +30,10 @@ const Explore = () => {
   const fetchOffers = async () => {
     try {
       const response = await getOffers({});
-      console.log('offer response', JSON.stringify(response.data?.data?.offers));
+      console.log(
+        'offer response',
+        JSON.stringify(response.data?.data?.offers),
+      );
       setOffers(response.data?.data?.offers);
     } catch (error) {
       console.error(error);

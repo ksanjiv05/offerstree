@@ -19,7 +19,7 @@ axios.interceptors.response.use(
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     let message;
 
-    switch (error.response.status) {
+    switch (error?.response?.status) {
       case 401:
         message = 'Invalid credentials';
         break;

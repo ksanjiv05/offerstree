@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {ITheme} from '../../../theme/ThemeContext';
+import {scale, verticalScale, moderateScale} from 'react-native-size-matters';
 
 export default ({colors}: ITheme) => {
   return StyleSheet.create({
@@ -16,7 +17,7 @@ export default ({colors}: ITheme) => {
       borderRadius: 51,
     },
     title: {
-      fontSize: 20,
+      fontSize: moderateScale(16),
       fontWeight: '600',
       textTransform: 'capitalize',
     },
@@ -24,7 +25,7 @@ export default ({colors}: ITheme) => {
     rowSpaceBetween: {flexDirection: 'row', justifyContent: 'space-between'},
     btn: {flex: 1, maxWidth: 150, maxHeight: 25},
     offText: {
-      fontSize: 12,
+      fontSize: moderateScale(12),
       color: colors.green,
       position: 'absolute',
       right: 10,
@@ -32,11 +33,11 @@ export default ({colors}: ITheme) => {
     },
     offTextContainer: {
       borderWidth: 1,
-      height: 45,
-      width: 180,
+      height: moderateScale(48),
+      width: moderateScale(185),
       borderColor: colors.gray5,
       paddingHorizontal: 20,
-      justifyContent: 'center',
+      // justifyContent: 'center',
       // alignItems: 'center',
     },
   });

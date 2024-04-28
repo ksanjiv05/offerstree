@@ -46,16 +46,16 @@ const OfferViewCard = ({text = '', location = ''}) => {
   );
 };
 
-export const OfferCard = ({offer}) => {
+// it is used in app/screens/explore/offer/OfferCardList.tsx
+export const OfferCard = ({offer}: any) => {
   const theme = useTheme();
   const styles = styleSheet(theme);
   const {
     title,
-    location,
-    text,
     grabe_code,
     percentage_value,
     offer_banner_url = '',
+    offer_category,
   } = offer;
   return (
     <View style={styles.container}>
@@ -63,7 +63,9 @@ export const OfferCard = ({offer}) => {
         <View style={styles.pic} />
         <View style={{paddingLeft: 10, flex: 1}}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={{color: theme.colors.gray5}}>Category</Text>
+          <Text style={{color: theme.colors.gray5}}>
+            {offer_category?.name}
+          </Text>
         </View>
         <View
           style={{

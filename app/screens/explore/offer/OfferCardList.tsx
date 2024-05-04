@@ -4,7 +4,7 @@ import {OfferCard} from '../../../components/organisms/card/OfferViewCard';
 import {useNavigation} from '@react-navigation/native';
 
 const OfferCardList = ({offers}) => {
-  console.log('offers', offers[0]?.offer_category);
+  console.log('offers',JSON.stringify(offers[0]));
   const navigation = useNavigation();
   return (
     <FlatList

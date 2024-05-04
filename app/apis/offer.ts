@@ -18,3 +18,13 @@ export const getOffers = async (data: any) => {
 export const getOfferCategories = async (data: any) => {
   return apiCore.get(`${API_V1}/offer-categories`, data);
 };
+
+export const addToWishList = async (data: any) => {
+  return apiCore.create(`${API_V1}/offers/add-to-wishlist`, data);
+};
+
+export const removeToWishList = async (data: any) => {
+  return apiCore.delete(
+    `${API_V1}/offers/remove-from-wishlist/${data.offer_id}`,
+  );
+};

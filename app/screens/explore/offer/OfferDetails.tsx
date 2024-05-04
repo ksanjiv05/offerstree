@@ -1,4 +1,4 @@
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, TouchableOpacity, ToastAndroid} from 'react-native';
 import React from 'react';
 import {useTheme} from '../../../theme/ThemeContext';
 import styleSheet from './styles';
@@ -8,6 +8,8 @@ import Divider from '../../../components/atoms/divider';
 import {AirbnbRating} from 'react-native-ratings';
 import TextButton from '../../../components/atoms/button';
 import moment from 'moment';
+import {addToWishList} from '../../../apis/offer';
+import {Linking} from 'react-native';
 
 const OfferDetails = ({route}) => {
   const theme = useTheme();
@@ -22,7 +24,7 @@ const OfferDetails = ({route}) => {
     discount_type = 'value',
     end_date = '2028-03-03',
     grabe_code = 'oipu',
-    id = 2,
+    id = -1,
     is_active = 1,
     max_discount_amount = '999.00',
     min_purchase_amount = '55.00',
@@ -37,7 +39,15 @@ const OfferDetails = ({route}) => {
     store = null,
   } = offerDetails;
 
-  console.log("address",store)
+  const grabOffer = async (id: number) => {
+    try {
+      await addToWishList({offer_id: id});
+      ToastAndroid.show('Offer added to wishlist', ToastAndroid.SHORT);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+ 
   return (
     <View style={styles.container}>
       <View style={styles.rowConatiner}>
@@ -52,16 +62,22 @@ const OfferDetails = ({route}) => {
         </View>
       </View>
       <Space height={15} />
-      <View style={styles.rowAlignmentCenter}>
+      <TouchableOpacity
+        onPress={() =>
+          Linking.openURL(
+            `google.navigation:q=${store?.address?.city} ${store?.address?.state} ${store?.address?.country}-${store?.address?.postal_code}`,
+          )
+        }
+        style={styles.rowAlignmentCenter}>
         <View style={{transform: [{scale: 0.5}]}}>
           <LocationIcon color="gray" />
         </View>
-        <Text style={{color: theme.colors.green,fontSize:17}}>
+        <Text style={{color: theme.colors.green, fontSize: 17}}>
           {store.address
             ? `${store?.address?.city} ${store?.address?.state} ${store?.address?.country}-${store?.address?.postal_code}`
             : 'N/A'}
         </Text>
-      </View>
+      </TouchableOpacity>
       <Space height={15} />
       <View style={{alignItems: 'flex-start'}}>
         <AirbnbRating showRating={false} size={25} />
@@ -84,7 +100,7 @@ const OfferDetails = ({route}) => {
         </View>
         <Text style={styles.textM}>Expires on </Text>
         <Text style={styles.textBlueM}>
-          {moment(end_date).format('DD-MM-YYY')}
+          {moment(end_date).format('DD-MM-YYYY')}
         </Text>
       </View>
       <Space height={10} />
@@ -126,8 +142,9 @@ const OfferDetails = ({route}) => {
         }}>
         <TextButton
           buttonStyle={{height: 55}}
-          labelButton="Grab the Offer"
+          labelButton="Add to wishlist"
           labelButtonStyle={{fontSize: 25}}
+          onPress={() => grabOffer(id)}
         />
       </View>
     </View>

@@ -1,4 +1,4 @@
-import {Image, TouchableOpacity, View} from 'react-native';
+import {Image, ToastAndroid, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {useTheme} from '../../../theme/ThemeContext';
 import styleSheet from './styles';
@@ -8,6 +8,8 @@ import TextButton from '../../atoms/button';
 import {Text} from '../../atoms/text/Text';
 import {AirbnbRating} from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {addToWishList, removeToWishList} from '../../../apis/offer';
+import { s } from 'react-native-size-matters';
 
 const OfferViewCard = ({text = '', location = ''}) => {
   const theme = useTheme();
@@ -57,6 +59,24 @@ export const OfferCard = ({offer}: any) => {
     offer_banner_url = '',
     offer_category,
   } = offer;
+
+  const [wishlist, setWishlist] = React.useState(false);
+  const grabOffer = async (id: number) => {
+    try {
+      if (wishlist) {
+        setWishlist(false);
+        await removeToWishList({offer_id: id});
+        return;
+      }
+
+      setWishlist(true);
+      await addToWishList({offer_id: id})
+
+    } catch (error) {
+      console.log('error', error);
+      setWishlist(false);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.rowConatiner}>
@@ -129,8 +149,13 @@ export const OfferCard = ({offer}: any) => {
           width: 60,
           height: 50,
           alignItems: 'center',
-        }}>
-        <Icon name="heart" color={theme.colors.gray3} size={30} />
+        }}
+        onPress={() => grabOffer(offer.id)}>
+        <Icon
+          name="heart"
+          color={wishlist ? theme.colors.red : theme.colors.gray5}
+          size={30}
+        />
       </TouchableOpacity>
     </View>
   );

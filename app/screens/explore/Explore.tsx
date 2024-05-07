@@ -12,6 +12,7 @@ import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import Space from '../../components/atoms/space';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import Filter from './filter/Filter';
+import Geolocation from '@react-native-community/geolocation';
 
 const defaultCategory = {
   id: 0,
@@ -23,6 +24,7 @@ const Explore = () => {
   const [mapView, setMapView] = React.useState(false);
   const [offers, setOffers] = React.useState([]);
   const [filteredOffers, setFilteredOffers] = React.useState([]);
+  const [currentLocation, setCurrentLocation] = React.useState({});
 
   const fetchCategories = async () => {
     try {
@@ -48,10 +50,10 @@ const Explore = () => {
     }
   };
 
-  React.useEffect(() => {
-    fetchCategories();
-    fetchOffers({});
-  }, []);
+  // React.useEffect(() => {
+  //   fetchCategories();
+  //   fetchOffers({});
+  // }, []);
 
   const onCategorySelect = (category: any) => {
     console.log('category', category);
@@ -98,6 +100,30 @@ const Explore = () => {
     bottomSheetModalRef.current?.present();
   }, []);
 
+  const onFilter = (filterObj: any) => {
+    console.log('filterObj', filterObj);
+    fetchOffers({
+      ...filterObj,
+      lat: currentLocation.current_lat,
+      lng: currentLocation.current_lng,
+    });
+  };
+
+  React.useEffect(() => {
+    fetchCategories();
+    Geolocation.getCurrentPosition(info => {
+      console.log(info);
+      setCurrentLocation({
+        current_lat: info.coords.latitude.toString(),
+        current_lng: info.coords.longitude.toString(),
+      });
+      fetchOffers({
+        current_lat: info.coords.latitude.toString(),
+        current_lng: info.coords.longitude.toString(),
+      });
+    });
+  }, []);
+
   return (
     <View style={{flex: 1, backgroundColor: '#000000'}}>
       {mapView ? (
@@ -130,7 +156,12 @@ const Explore = () => {
             </TouchableOpacity>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               {/* <Icon name="home" size={25} color="#fff" /> */}
-              <TouchableOpacity onPress={() => setMapView(true)}>
+              <TouchableOpacity
+                onPress={() => setMapView(true)}
+                style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{color: '#fff', fontSize: 25, marginRight: 7}}>
+                  Stores
+                </Text>
                 <Icon name="map" size={25} color="#fff" />
               </TouchableOpacity>
             </View>
@@ -147,7 +178,7 @@ const Explore = () => {
             index={0}
             snapPoints={snapPoints}>
             <View style={{flex: 1}}>
-              <Filter />
+              <Filter onFilter={onFilter} />
             </View>
           </BottomSheetModal>
         </>

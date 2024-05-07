@@ -6,6 +6,7 @@ import MapView from 'react-native-maps';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {Text} from '../../../components/atoms/text/Text';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { getStores } from '../../../apis/store';
 
 const ExploreMap = ({onBackPress}) => {
   const theme = useTheme();
@@ -23,6 +24,15 @@ const ExploreMap = ({onBackPress}) => {
   React.useEffect(() => {
     // handlePresentModalPress();
   }, [handlePresentModalPress]);
+
+  const fetchStors = async() => {
+    const stors = await getStores();
+    console.log('stors', stors);
+  }
+
+  React.useEffect(() => {
+    fetchStors();
+  }, []);
 
   return (
     <View style={styles.container}>

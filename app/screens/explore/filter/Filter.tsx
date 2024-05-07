@@ -30,7 +30,7 @@ const filter = [
   },
 ];
 
-const Filter = () => {
+const Filter = ({onFilter}) => {
   const [selectedCategory, setSelectedCategory] = React.useState(filter[0]);
   const [distance, setDistance] = React.useState(0);
   const [startDate, setStartDate] = useState<Date>();
@@ -53,28 +53,67 @@ const Filter = () => {
     );
   };
 
+  const applyFilter = () => {
+    const filterObj = {
+      start_date: startDate,
+      end_date: endDate,
+    };
+    onFilter(filterObj);
+  };
+
+  const byDistance = (distance: number) => {
+    onFilter({search_radius: distance});
+  };
+  const byDiscount = (discount: number) => {
+    onFilter({discount});
+  };
+
   return (
     <View style={{padding: 10}}>
       <Category
         categories={filter}
         onCategorySelect={onCategorySelect}
         defaultColor="#0000004a"
+        isDefaultCategory={false}
       />
       {selectedCategory.id === 1 && (
         <View style={styles.container}>
           <View style={styles.containtConatiner}>
-            <TextButton buttonStyle={styles.btn} labelButton="Within 5KM" />
-            <TextButton buttonStyle={styles.btn} labelButton="Within 10KM" />
-            <TextButton buttonStyle={styles.btn} labelButton="Within 15KM" />
-            <TextButton buttonStyle={styles.btn} labelButton="Within 20KM" />
-            <TextButton buttonStyle={styles.btn} labelButton="Within 25KM" />
+            <TextButton
+              onPress={() => byDistance(5)}
+              buttonStyle={styles.btn}
+              labelButton="Within 5KM"
+            />
+            <TextButton
+              onPress={() => byDistance(10)}
+              buttonStyle={styles.btn}
+              labelButton="Within 10KM"
+            />
+            <TextButton
+              onPress={() => byDistance(15)}
+              buttonStyle={styles.btn}
+              labelButton="Within 15KM"
+            />
+            <TextButton
+              onPress={() => byDistance(20)}
+              buttonStyle={styles.btn}
+              labelButton="Within 20KM"
+            />
+            <TextButton
+              onPress={() => byDistance(25)}
+              buttonStyle={styles.btn}
+              labelButton="Within 25KM"
+            />
           </View>
           <View>
             <Space height={20} />
             <Slider
               minimumValue={1}
               maximumValue={100}
-              onValueChange={v => setDistance(v)}
+              onValueChange={v => {
+                console.log('v', v[0].toFixed(0));
+              }}
+              onSlidingComplete={v => byDistance(Math.round(v[0]))}
             />
             <Text
               style={{textAlign: 'center', fontSize: 18, fontWeight: '700'}}>
@@ -98,11 +137,31 @@ const Filter = () => {
       {selectedCategory.id === 3 && (
         <View style={styles.container}>
           <View style={styles.containtConatiner}>
-            <TextButton buttonStyle={styles.btn} labelButton="50% Off" />
-            <TextButton buttonStyle={styles.btn} labelButton="60% Off" />
-            <TextButton buttonStyle={styles.btn} labelButton="70% Off" />
-            <TextButton buttonStyle={styles.btn} labelButton="80% Off" />
-            <TextButton buttonStyle={styles.btn} labelButton="90% Off" />
+            <TextButton
+              onPress={() => byDiscount(50)}
+              buttonStyle={styles.btn}
+              labelButton="50% Off"
+            />
+            <TextButton
+              onPress={() => byDiscount(60)}
+              buttonStyle={styles.btn}
+              labelButton="60% Off"
+            />
+            <TextButton
+              onPress={() => byDiscount(70)}
+              buttonStyle={styles.btn}
+              labelButton="70% Off"
+            />
+            <TextButton
+              onPress={() => byDiscount(80)}
+              buttonStyle={styles.btn}
+              labelButton="80% Off"
+            />
+            <TextButton
+              onPress={() => byDiscount(90)}
+              buttonStyle={styles.btn}
+              labelButton="90% Off"
+            />
           </View>
           <View>
             <Space height={20} />
@@ -110,6 +169,7 @@ const Filter = () => {
               minimumValue={1}
               maximumValue={100}
               onValueChange={v => setDistance(v)}
+              onSlidingComplete={v => byDiscount(Math.round(v))}
             />
             <Text
               style={{textAlign: 'center', fontSize: 18, fontWeight: '700'}}>
@@ -120,7 +180,7 @@ const Filter = () => {
       )}
       {selectedCategory.id === 4 && (
         <View style={styles.container}>
-          <View style={{paddingHorizontal:15}}>
+          <View style={{paddingHorizontal: 15}}>
             <CalendarPicker
               weekdays={['S', 'M', 'T', 'W', 'T', 'F', 'S']}
               showDayStragglers={false}
@@ -162,7 +222,7 @@ const Filter = () => {
             />
           </View>
           <Space height={20} />
-          <TextButton labelButton="Apply" />
+          <TextButton onPress={applyFilter} labelButton="Apply" />
         </View>
       )}
       {selectedCategory.id === 5 && (

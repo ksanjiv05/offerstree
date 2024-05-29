@@ -9,7 +9,9 @@ import {Text} from '../../atoms/text/Text';
 import {AirbnbRating} from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {addToWishList, removeToWishList} from '../../../apis/offer';
-import { s } from 'react-native-size-matters';
+import {s} from 'react-native-size-matters';
+import {getItem} from '../../../utils/storage';
+import {useNavigation} from '@react-navigation/native';
 
 const OfferViewCard = ({text = '', location = ''}) => {
   const theme = useTheme();
@@ -58,11 +60,21 @@ export const OfferCard = ({offer}: any) => {
     percentage_value,
     offer_banner_url = '',
     offer_category,
+    wishlisted = null,
   } = offer;
 
-  const [wishlist, setWishlist] = React.useState(false);
+  const [wishlist, setWishlist] = React.useState(wishlisted ? true : false);
+  const {navigation} = useNavigation();
+
   const grabOffer = async (id: number) => {
     try {
+      const token = await getItem('token');
+      if (!token) {
+        ToastAndroid.show('Please login to grab offer', ToastAndroid.SHORT);
+        navigation.navigate('login');
+
+        return;
+      }
       if (wishlist) {
         setWishlist(false);
         await removeToWishList({offer_id: id});
@@ -70,13 +82,13 @@ export const OfferCard = ({offer}: any) => {
       }
 
       setWishlist(true);
-      await addToWishList({offer_id: id})
-
+      await addToWishList({offer_id: id});
     } catch (error) {
       console.log('error', error);
       setWishlist(false);
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.rowConatiner}>
@@ -137,6 +149,7 @@ export const OfferCard = ({offer}: any) => {
           <Image
             source={{uri: offer_banner_url}}
             style={{width: '100%', height: 200}}
+            resizeMode="contain"
           />
         </View>
       )}

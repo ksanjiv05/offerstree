@@ -1,7 +1,7 @@
 import {FlatList, TouchableOpacity, RefreshControl} from 'react-native';
 import React from 'react';
-import {OfferCard} from '../../../components/organisms/card/OfferViewCard';
 import {useNavigation} from '@react-navigation/native';
+import {OfferCard} from '../../components/organisms/card/OfferViewCard';
 
 const OfferCardList = ({offers, handleRefresh}: any) => {
   const navigation = useNavigation();
@@ -23,8 +23,10 @@ const OfferCardList = ({offers, handleRefresh}: any) => {
       }
       renderItem={({item}) => (
         <TouchableOpacity
-          onPress={() => navigation.navigate('offer-details', item)}>
-          <OfferCard offer={item} />
+          onPress={() =>
+            navigation.navigate('offer-details', {offer: item?.offer})
+          }>
+          <OfferCard offer={item?.offer} />
         </TouchableOpacity>
       )}
       keyExtractor={item => item.id.toString()}

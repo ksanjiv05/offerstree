@@ -1,4 +1,4 @@
-import {View, Text, DrawerLayoutAndroid, Button} from 'react-native';
+import {View, Text, DrawerLayoutAndroid, StyleSheet, Image} from 'react-native';
 import React, {useCallback, useMemo, useRef} from 'react';
 import Category from '../../components/molecules/category/Category';
 import Input from '../../components/atoms/input';
@@ -8,18 +8,20 @@ import OfferCardList from './offer/OfferCardList';
 import ExploreMap from './map/ExploreMap';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {getOfferCategories, getOffers} from '../../apis/offer';
-import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import Space from '../../components/atoms/space';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import Filter from './filter/Filter';
 import Geolocation from '@react-native-community/geolocation';
+import {privateNavigation} from '../../utils/private.navigation';
+import Profile from '../profile/Profile';
+import {Drawer} from 'react-native-drawer-layout';
 
 const defaultCategory = {
   id: 0,
   name: 'All',
 };
 
-const Explore = () => {
+const Explore = ({navigation}) => {
   const [categories, setCategories] = React.useState([]);
   const [mapView, setMapView] = React.useState(false);
   const [offers, setOffers] = React.useState([]);
@@ -39,14 +41,13 @@ const Explore = () => {
   const fetchOffers = async (filterObj: any) => {
     try {
       const response = await getOffers(filterObj);
-      console.log(
-        'offer response',
-        JSON.stringify(response.data?.data?.offers),
-      );
+      console.log('total offers', response.data?.data?.offers.length);
       setOffers(response.data?.data?.offers);
       setFilteredOffers(response.data?.data?.offers);
+      return true;
     } catch (error) {
       console.error(error);
+      return false;
     }
   };
 
@@ -73,23 +74,6 @@ const Explore = () => {
     setFilter({...filter, [key]: value});
   };
 
-  // const drawer = useRef<DrawerLayoutAndroid>(null);
-  // const navigationView = () => (
-  //   <View
-  //     style={{
-  //       flex: 1,
-  //       padding: 16,
-  //       backgroundColor: '#ecf0f1',
-  //     }}>
-  //     <Text>Filter</Text>
-  //     <Space height={25} />
-  //     <Button
-  //       title="Close drawer"
-  //       onPress={() => drawer.current?.closeDrawer()}
-  //     />
-  //   </View>
-  // );
-
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   // variables
@@ -107,6 +91,7 @@ const Explore = () => {
       lat: currentLocation.current_lat,
       lng: currentLocation.current_lng,
     });
+    bottomSheetModalRef.current?.close();
   };
 
   React.useEffect(() => {
@@ -124,6 +109,20 @@ const Explore = () => {
     });
   }, []);
 
+  const handleRefresh = () => {
+    return fetchOffers({});
+  };
+  // const drawer = useRef<DrawerLayoutAndroid>(null);
+  const [open, setOpen] = React.useState(false);
+
+  const closeDrawer = () => {
+    setOpen(false);
+  };
+  const navigationView = () => (
+    <View style={{flex: 1}}>
+      <Profile closeDrawer={closeDrawer} />
+    </View>
+  );
   return (
     <View style={{flex: 1, backgroundColor: '#000000'}}>
       {mapView ? (
@@ -134,57 +133,125 @@ const Explore = () => {
             ref={drawer}
             drawerWidth={300}
             drawerPosition="left"
+            onDrawerClose={() => {
+              console.log('drawer closed');
+            }}
+            onDrawerOpen={() => {
+              console.log('drawer open');
+            }}
             renderNavigationView={navigationView}> */}
-          <Input
-            placeholder="Search"
-            onChange={text => onChange('search', text)}
-            appendComponent={<SearchIcon onPress={() => fetchOffers(filter)} />}
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 10,
-            }}>
-            <TouchableOpacity
-              style={{flexDirection: 'row', alignItems: 'center'}}
-              onPress={handlePresentModalPress}>
-              <Text style={{color: '#fff', fontSize: 25, marginRight: 7}}>
-                Filter
-              </Text>
-              <Icon name="filter" size={25} color="#fff" />
-            </TouchableOpacity>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {/* <Icon name="home" size={25} color="#fff" /> */}
+          <Drawer
+            open={open}
+            onOpen={() => setOpen(true)}
+            onClose={() => setOpen(false)}
+            renderDrawerContent={navigationView}>
+            <View style={styles.searchCon}>
               <TouchableOpacity
-                onPress={() => setMapView(true)}
-                style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={{color: '#fff', fontSize: 25, marginRight: 7}}>
-                  Stores
-                </Text>
-                <Icon name="map" size={25} color="#fff" />
+                onPress={() => setOpen(true)}
+                style={{
+                  marginRight: 10,
+                }}>
+                <Image
+                  source={undefined}
+                  style={{
+                    width: 50,
+                    height: 50,
+                    backgroundColor: '#fff',
+                    borderRadius: 45,
+                  }}
+                />
               </TouchableOpacity>
+              <View style={{flex: 1}}>
+                <Input
+                  placeholder="Search"
+                  inputContainerStyle={{
+                    width: '100%',
+                    height: 45,
+                  }}
+                  onChange={text => onChange('search', text)}
+                  appendComponent={
+                    <SearchIcon onPress={() => fetchOffers(filter)} />
+                  }
+                />
+              </View>
             </View>
-          </View>
-          <Category
-            isDefaultCategory={false}
-            categories={[defaultCategory, ...categories]}
-            onCategorySelect={onCategorySelect}
-          />
-          <OfferCardList offers={filteredOffers} />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: 10,
+              }}>
+              <TouchableOpacity
+                style={{flexDirection: 'row', alignItems: 'center'}}
+                onPress={handlePresentModalPress}>
+                <Text style={{color: '#fff', fontSize: 25, marginRight: 7}}>
+                  Filter
+                </Text>
+                <Icon name="filter" size={25} color="#fff" />
+              </TouchableOpacity>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                {/* <Icon name="home" size={25} color="#fff" /> */}
+                <TouchableOpacity
+                  onPress={() => setMapView(true)}
+                  style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text style={{color: '#fff', fontSize: 25, marginRight: 7}}>
+                    Stores
+                  </Text>
+                  <Icon name="map" size={25} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <Category
+              isDefaultCategory={false}
+              categories={[defaultCategory, ...categories]}
+              onCategorySelect={onCategorySelect}
+            />
+            <OfferCardList
+              handleRefresh={handleRefresh}
+              offers={filteredOffers}
+            />
+            <TouchableOpacity
+              onPress={() => privateNavigation(navigation, 'offer-create', {})}
+              style={styles.createBtn}>
+              <Icon name="plus" size={30} color="#fff" />
+            </TouchableOpacity>
+            {/* </DrawerLayoutAndroid> */}
+            <BottomSheetModal
+              ref={bottomSheetModalRef}
+              index={0}
+              snapPoints={snapPoints}>
+              <View style={{flex: 1}}>
+                <Filter onFilter={onFilter} />
+              </View>
+            </BottomSheetModal>
+          </Drawer>
           {/* </DrawerLayoutAndroid> */}
-          <BottomSheetModal
-            ref={bottomSheetModalRef}
-            index={0}
-            snapPoints={snapPoints}>
-            <View style={{flex: 1}}>
-              <Filter onFilter={onFilter} />
-            </View>
-          </BottomSheetModal>
         </>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  searchCon: {
+    flex: 1,
+    maxHeight: 55,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  createBtn: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#000000',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default Explore;

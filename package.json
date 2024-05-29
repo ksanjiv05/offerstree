@@ -27,6 +27,7 @@
     "react-native-calendar-picker": "^8.0.2",
     "react-native-collapsible-tab-view": "^7.0.1",
     "react-native-date-picker": "^4.3.5",
+    "react-native-drawer-layout": "^3.3.0",
     "react-native-gesture-handler": "^2.14.0",
     "react-native-image-crop-picker": "^0.40.2",
     "react-native-image-picker": "^7.1.0",

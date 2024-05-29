@@ -5,7 +5,7 @@ export default ({colors}: ITheme) => {
   return StyleSheet.create({
     defaultInputContainerStyle: {
       justifyContent: 'center',
-      width: '100%',
+      // width: '100%',
       height: 56,
       backgroundColor: colors.gray1,
       borderWidth: 1,

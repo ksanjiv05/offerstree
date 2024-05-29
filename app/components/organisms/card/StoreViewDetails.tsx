@@ -21,16 +21,17 @@ const TextCard = ({title = '', text = ''}) => {
   );
 };
 
-const StoreViewDetailsCard = ({
-  description = '',
-  founder = '',
-  address,
-  store_email = '',
-  store_contact_number = '',
-  founding_date = '',
-  website_url = '',
-  title = '',
-}) => {
+const StoreViewDetailsCard = (props: any) => {
+  const {
+    description = '',
+    founder = '',
+    address,
+    store_email = '',
+    store_contact_number = '',
+    founding_date = '',
+    website_url = '',
+    title = '',
+  } = props;
   const theme = useTheme();
   const styles = styleSheet(theme);
   return (

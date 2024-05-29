@@ -16,5 +16,5 @@ export const updateDiscription = async (storeId: string, data: any) => {
 };
 
 export const getStores = async (data: any) => {
-  return apiCore.get(`${API_V1}/user/stores`, data);
+  return apiCore.get(`${API_V1}/stores`, data);
 };

@@ -6,6 +6,7 @@ import {Slider} from '@miblanchard/react-native-slider';
 import Space from '../../../components/atoms/space';
 import {FlatList} from 'react-native-gesture-handler';
 import CalendarPicker, {ChangedDate} from 'react-native-calendar-picker';
+import { getStores } from '../../../apis/store';
 
 const filter = [
   {
@@ -29,6 +30,7 @@ const filter = [
     name: 'higest rating',
   },
 ];
+
 
 const Filter = ({onFilter}) => {
   const [selectedCategory, setSelectedCategory] = React.useState(filter[0]);
@@ -60,6 +62,10 @@ const Filter = ({onFilter}) => {
     };
     onFilter(filterObj);
   };
+   const resteFilter = () => {
+   
+    onFilter({});
+  };
 
   const byDistance = (distance: number) => {
     onFilter({search_radius: distance});
@@ -67,6 +73,17 @@ const Filter = ({onFilter}) => {
   const byDiscount = (discount: number) => {
     onFilter({discount});
   };
+
+  const [stores, setStores] = React.useState([{}]);
+
+  async function fatchStore() {
+   const res = await getStores({})
+    if (res.status === 200) setStores(res.data.data.stores);
+  }
+
+  React.useEffect(() => {
+    fatchStore();
+  }, []);
 
   return (
     <View style={{padding: 10}}>
@@ -107,25 +124,27 @@ const Filter = ({onFilter}) => {
           </View>
           <View>
             <Space height={20} />
-            <Slider
-              minimumValue={1}
-              maximumValue={100}
-              onValueChange={v => {
-                console.log('v', v[0].toFixed(0));
-              }}
-              onSlidingComplete={v => byDistance(Math.round(v[0]))}
-            />
             <Text
               style={{textAlign: 'center', fontSize: 18, fontWeight: '700'}}>
               Within {Math.round(distance)}KM
             </Text>
+            <Slider
+              minimumValue={1}
+              maximumValue={100}
+              onValueChange={v => {
+                setDistance(v[0].toFixed(0));
+              }}
+              onSlidingComplete={v => byDistance(Math.round(v[0]))}
+            />
           </View>
+          <Space height={30} />
+          <TextButton onPress={resteFilter} labelButton="Reset All" />
         </View>
       )}
       {selectedCategory.id === 2 && (
         <View>
           <FlatList
-            data={[1, 2, 3, 4, 5]}
+            data={stores}
             renderItem={renderStore}
             keyExtractor={item => item.toString()}
             showsVerticalScrollIndicator={false}

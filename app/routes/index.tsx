@@ -5,7 +5,6 @@ import {getItem} from '../utils/storage';
 import Loader from '../screens/loader/Loader';
 import axios from 'axios';
 
-
 const Stack = createNativeStackNavigator();
 type Props = {};
 
@@ -14,7 +13,6 @@ const Routes = ({}: Props) => {
   const [loader, setLoader] = React.useState(true);
   const checkAuth = async () => {
     const token = await getItem('token');
-    console.log('token', token);
     if (token) {
       setIsAuthenticated(true);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -31,6 +29,9 @@ const Routes = ({}: Props) => {
     <Stack.Navigator
       initialRouteName={isAuthenticated ? 'offer-explore' : 'login'}>
       {routes.map((route, index) => {
+        if (route.isPrivate && !isAuthenticated) {
+          return null;
+        }
         return (
           <Stack.Screen
             key={index}

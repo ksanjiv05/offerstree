@@ -53,6 +53,7 @@ import StarIcon from './Star.svg';
 import AiEditIcon from './AiEdit.svg';
 import LocationIcon from './Location.svg';
 import CheckIcon from './Check.svg';
+import storeIcon from './store.png';
 
 export {
   TopArrowIcon,
@@ -107,4 +108,5 @@ export {
   AiEditIcon,
   LocationIcon,
   CheckIcon,
+  storeIcon,
 };

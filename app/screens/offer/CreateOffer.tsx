@@ -12,6 +12,7 @@ import {createOffer, getOfferCategories} from '../../apis/offer';
 import moment from 'moment';
 import {toastMessage} from '../../services/ToastMessage';
 import CustomImagePicker from '../../components/organisms/imagePicker';
+import {privateNavigation} from '../../utils/private.navigation';
 
 const offerInit = {
   title: '',
@@ -32,7 +33,7 @@ const offerInit = {
   offer_banner: null,
 };
 
-const CreateOffer = () => {
+const CreateOffer = ({navigation}) => {
   const theme = useTheme();
   const styles = styleSheet(theme);
   const [startDate, setStartDate] = useState(new Date());
@@ -122,7 +123,16 @@ const CreateOffer = () => {
     try {
       const res = await getStores({});
       if (res.status === 200) {
-        const st = res.data.data.stores.data;
+        const st = res.data.data.stores?.data;
+        console.log('st ', st);
+        toastMessage.publish({
+          title: "You don't have any store.",
+          text: 'Please create store first',
+          type: 'success',
+        });
+        if (!st || st.length < 1) {
+          privateNavigation(navigation, 'store-enroll', {});
+        }
         setStores(st.map((s: any) => ({name: s.title, id: s.id})));
       }
     } catch (error) {
@@ -279,6 +289,7 @@ const CreateOffer = () => {
             <CustomImagePicker setImg={setImg} isGallary={true} />
           </View>
         )}
+        <Space height={20} />
       </ScrollView>
       <DatePicker
         modal

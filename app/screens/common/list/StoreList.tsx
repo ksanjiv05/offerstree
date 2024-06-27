@@ -1,14 +1,14 @@
-import {View, Text, FlatList} from 'react-native';
+import {View, FlatList} from 'react-native';
 import React from 'react';
 import {StoreCard} from '../../../components/organisms/card/StoreViewCard';
 import {getStores} from '../../../apis/store';
 
-const StoreList = ({navigation}) => {
+const StoreList = ({navigation}: any) => {
   const [stores, setStores] = React.useState([]);
 
   const getStoresOfUser = async () => {
     try {
-      const res = await getStores();
+      const res = await getStores({});
       console.log(res.data.data.stores.data[0]);
       if (res.status === 200) {
         setStores(res.data.data.stores.data);
@@ -35,7 +35,7 @@ const StoreList = ({navigation}) => {
             is_active={item.is_active}
           />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item?.id.toString()}
       />
     </View>
   );

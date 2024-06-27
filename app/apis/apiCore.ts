@@ -1,6 +1,7 @@
 // import jwtDecode from 'jwt-decode';
 import axios from 'axios';
 import {BASE_URL} from '../config/constant';
+import {setItem} from '../utils/storage';
 
 // content type
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -21,9 +22,15 @@ axios.interceptors.response.use(
 
     switch (error?.response?.status) {
       case 401:
+        setItem('token', '');
+        setItem('expiresIn', 0);
+
         message = 'Invalid credentials';
         break;
       case 403:
+        setItem('token', '');
+        setItem('expiresIn', 0);
+
         message = 'Access Forbidden';
         break;
       case 404:

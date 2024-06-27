@@ -51,7 +51,7 @@ const OfferViewCard = ({text = '', location = ''}) => {
 };
 
 // it is used in app/screens/explore/offer/OfferCardList.tsx
-export const OfferCard = ({offer}: any) => {
+export const OfferCard = ({offer,isWishListBtn=true}: any) => {
   const theme = useTheme();
   const styles = styleSheet(theme);
   const {
@@ -61,6 +61,7 @@ export const OfferCard = ({offer}: any) => {
     offer_banner_url = '',
     offer_category,
     wishlisted = null,
+    
   } = offer;
 
   const [wishlist, setWishlist] = React.useState(wishlisted ? true : false);
@@ -154,7 +155,7 @@ export const OfferCard = ({offer}: any) => {
         </View>
       )}
 
-      <TouchableOpacity
+      {isWishListBtn&&<TouchableOpacity
         style={{
           position: 'absolute',
           bottom: 0,
@@ -169,7 +170,7 @@ export const OfferCard = ({offer}: any) => {
           color={wishlist ? theme.colors.red : theme.colors.gray5}
           size={30}
         />
-      </TouchableOpacity>
+      </TouchableOpacity>}
     </View>
   );
 };

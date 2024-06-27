@@ -11,6 +11,8 @@ import StoreView from '../screens/common/details/StoreView.tsx';
 import Explore from '../screens/explore/Explore.tsx';
 import OfferDetails from '../screens/explore/offer/OfferDetails.tsx';
 import Wishlist from '../screens/wishlist/Wishlist.tsx';
+import Listed from '../screens/profile/listed/Listed.tsx';
+import StoreListed from '../screens/profile/stors/StoreListed.tsx';
 
 const routes = [
   {
@@ -83,6 +85,18 @@ const routes = [
     path: '/wishlist',
     name: 'wishlist',
     component: Wishlist,
+    isPrivate: true,
+  },
+  {
+    path: '/listed',
+    name: 'listed',
+    component: Listed,
+    isPrivate: true,
+  },
+  {
+    path: '/store-listed',
+    name: 'store-listed',
+    component: StoreListed,
     isPrivate: true,
   },
 ];

@@ -63,7 +63,6 @@ const Filter = ({onFilter}) => {
     onFilter(filterObj);
   };
    const resteFilter = () => {
-   
     onFilter({});
   };
 

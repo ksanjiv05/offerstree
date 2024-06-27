@@ -19,6 +19,7 @@ import {FacebookIcon, GoogleIcon, XIcon} from '../../assets/icons';
 import {toastMessage} from '../../services/ToastMessage';
 import {login} from '../../apis/auth';
 import {setItem} from '../../utils/storage';
+import axios from 'axios';
 
 type Props = {
   navigation: any;
@@ -50,12 +51,16 @@ const Login = ({navigation}: Props) => {
     // api call
     login({...user, login_type: 'password'})
       .then(res => {
-        // console.log(res.data, res.data?.data);
+        console.log(res.data, res.data?.data);
         toastMessage.publish({type: 'success', title: 'Login success'});
         setItem('user', res.data?.data.user);
         setItem('token', res.data?.data.token);
+        setItem('expiresIn', res.data?.data.expiresIn);
+        axios.defaults.headers.common[
+          'Authorization'
+        ] = `Bearer ${res.data?.data.token}`;
         if (res) {
-          navigation.navigate('offer-view');
+          navigation.navigate('offer-explore');
         }
       })
       .catch(err => {
@@ -85,6 +90,7 @@ const Login = ({navigation}: Props) => {
           <FormInput
             value={user?.password}
             placeholder="Password"
+            secureTextEntry={true}
             onChange={text => onChange('password', text)}
           />
           <Space height={25} />

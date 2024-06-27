@@ -10,10 +10,22 @@ import styleSheet from './styles';
 import {Text} from '../../components/atoms/text/Text';
 import {privateNavigation} from '../../utils/private.navigation';
 import {useNavigation} from '@react-navigation/native';
+import {getItem} from '../../utils/storage';
 
 const Profile = ({closeDrawer}) => {
   const theme = useTheme();
   const styles = styleSheet(theme);
+  const [user, setUser] = React.useState({});
+
+  const getUser = async () => {
+    const userData = await getItem('user');
+    console.log('user', userData);
+    setUser(userData);
+  };
+
+  React.useEffect(() => {
+    getUser();
+  }, []);
 
   const navigation = useNavigation();
   return (
@@ -26,8 +38,10 @@ const Profile = ({closeDrawer}) => {
         <View style={{height: 250, justifyContent: 'center'}}>
           <View style={styles.pic}></View>
         </View>
-        <Text style={{color: '#fff', fontSize: 22}}>Sanjiv kumar pandit</Text>
-        <Text style={{color: '#fff', textAlign: 'center'}}>@Sanjiv0005</Text>
+        <Text style={{color: '#fff', fontSize: 22, textAlign: 'center'}}>
+          {user?.name}
+        </Text>
+        <Text style={{color: '#fff', textAlign: 'center'}}>{user?.email}</Text>
         <Space height={20} />
         <Space height={20} />
         <TextButton
@@ -56,7 +70,7 @@ const Profile = ({closeDrawer}) => {
           buttonStyle={{backgroundColor: '#0000004a'}}
           onPress={() => {
             closeDrawer();
-            privateNavigation(navigation, 'offer-create', {});
+            privateNavigation(navigation, 'listed', {});
           }}
           labelButton="Your offers"
         />
@@ -64,7 +78,7 @@ const Profile = ({closeDrawer}) => {
           buttonStyle={{backgroundColor: '#0000004a'}}
           onPress={() => {
             closeDrawer();
-            privateNavigation(navigation, 'store-enroll', {});
+            privateNavigation(navigation, 'store-listed', {});
           }}
           labelButton="Your stores"
         />

@@ -1,22 +1,27 @@
 import {View, StyleSheet, Image} from 'react-native';
 import React from 'react';
-import Input from '../../components/atoms/input';
-import {SearchIcon} from '../../assets/icons';
+
 import OfferCardList from './OfferCardList';
 
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-import Profile from '../profile/Profile';
 import {Drawer} from 'react-native-drawer-layout';
-import {getWishList} from '../../apis/wishlist';
+import {getWishList} from '../../../apis/wishlist';
+import {SearchIcon} from '../../../assets/icons';
+import Input from '../../../components/atoms/input';
+import Profile from '../Profile';
+import {privateNavigation} from '../../../utils/private.navigation';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { getSallerOffers } from '../../../apis/offer';
 
-const Wishlist = ({}) => {
+const StoreListed = ({navigation}) => {
   const [offers, setOffers] = React.useState([]);
-//   const [filteredOffers, setFilteredOffers] = React.useState([]);
+  //   const [filteredOffers, setFilteredOffers] = React.useState([]);
 
   const fetchOffers = async (filterObj: any) => {
     try {
-      const response = await getWishList(filterObj);
+      const response = await getSallerOffers();
+      console.log("offer res",response.data.data)
       setOffers(response.data?.data?.offers);
       return true;
     } catch (error) {
@@ -82,8 +87,19 @@ const Wishlist = ({}) => {
             />
           </View>
         </View>
+        <View style={{
+          flex: 1,
+          marginTop:10
+        }}>
 
         <OfferCardList handleRefresh={handleRefresh} offers={offers} />
+        </View>
+
+        <TouchableOpacity
+          onPress={() => privateNavigation(navigation, 'offer-create', {})}
+          style={styles.createBtn}>
+          <Icon name="plus" size={30} color="#fff" />
+        </TouchableOpacity>
       </Drawer>
     </View>
   );
@@ -111,4 +127,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Wishlist;
+export default StoreListed;

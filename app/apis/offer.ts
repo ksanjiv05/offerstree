@@ -28,3 +28,11 @@ export const removeToWishList = async (data: any) => {
     `${API_V1}/offers/remove-from-wishlist/${data.offer_id}`,
   );
 };
+
+export const getSallerOffers = () => {
+  return apiCore.get(`${API_V1}/user/offers`, {});
+};
+
+export const storeWiseOffers = (storeId: string) => {
+  return apiCore.get(`${API_V1}/user/store/{storeId}/offers`, {});
+};
